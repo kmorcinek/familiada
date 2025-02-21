@@ -41,8 +41,18 @@
         .wrong-mark {
             color: red;
             font-size: 24px;
-            margin-right: 10px;
-            visibility: visible;
+            margin-left: 10px;
+            display: inline-block;
+        }
+        .wrong-answer-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        #wrong-marks {
+            display: flex;
+            align-items: center;
         }
         .points {
             font-weight: bold;
@@ -80,7 +90,10 @@
         <div class="question hidden"></div>
         <button id="show-question-btn">Pokaż pytanie</button>
         <div id="answers"></div>
-        <button id="wrong-answer-btn">Zła odpowiedź</button>
+        <div class="wrong-answer-section">
+            <button id="wrong-answer-btn">Zła odpowiedź</button>
+            <div id="wrong-marks"></div>
+        </div>
     </div>
 
     <script>
@@ -112,7 +125,6 @@
                 const answerHtml = `
                     <div class="answer-container">
                         <span class="answer" id="answer-${index}">
-                            <span class="wrong-mark" id="wrong-${index}" style="display: none">✗</span>
                             ${answer.text} <span class="points">(${answer.points} pkt)</span>
                         </span>
                         <button id="button-${index}" onclick="showAnswer(${index})">Pokaż</button>
@@ -125,13 +137,8 @@
             $('#wrong-answer-btn').click(function() {
                 wrongAnswersCount++;
                 
-                // Znajdź pierwszą ukrytą odpowiedź i pokaż przy niej X
-                $('.answer').each(function(index) {
-                    if (!$(this).hasClass('visible') && $('#wrong-' + index).css('display') === 'none') {
-                        $('#wrong-' + index).show();
-                        return false; // przerwij pętlę po znalezieniu pierwszej ukrytej odpowiedzi
-                    }
-                });
+                // Dodaj X do sekcji złych odpowiedzi
+                $('#wrong-marks').append('<span class="wrong-mark">✗</span>');
 
                 // Po 3 błędnych odpowiedziach ukryj przycisk
                 if (wrongAnswersCount >= 3) {
