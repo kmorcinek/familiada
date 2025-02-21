@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Familiada</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .question {
+            font-size: 24px;
+            margin: 20px 0;
+            text-align: center;
+            color: #e74c3c;
+        }
+        .answer-container {
+            background: white;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .answer {
+            font-size: 20px;
+            color: #2980b9;
+            visibility: hidden;
+        }
+        .points {
+            font-weight: bold;
+            color: #27ae60;
+        }
+        button {
+            padding: 5px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .visible {
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <h1>Familiada</h1>
+    <div id="game-container">
+        <div class="question"></div>
+        <div id="answers"></div>
+    </div>
+
+    <script>
+        const gameData = {
+            "question": "Popularny owoc zaczynający się na literę 'J'",
+            "answers": [
+                {"text": "Jabłko", "points": 45},
+                {"text": "Jagody", "points": 25},
+                {"text": "Jeżyny", "points": 15},
+                {"text": "Jarzębina", "points": 10},
+                {"text": "Jaszczur", "points": 5}
+            ]
+        };
+
+        $(document).ready(function() {
+            // Wyświetl pytanie
+            $('.question').text(gameData.question);
+
+            // Generuj odpowiedzi
+            gameData.answers.forEach((answer, index) => {
+                const answerHtml = `
+                    <div class="answer-container">
+                        <span class="answer" id="answer-${index}">${answer.text} <span class="points">(${answer.points} pkt)</span></span>
+                        <button onclick="showAnswer(${index})">Pokaż</button>
+                    </div>
+                `;
+                $('#answers').append(answerHtml);
+            });
+        });
+
+        function showAnswer(index) {
+            $(`#answer-${index}`).addClass('visible');
+        }
+    </script>
+</body>
+</html>
