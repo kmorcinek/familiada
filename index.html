@@ -67,12 +67,10 @@
     </style>
 </head>
 <body>
-    <div id="title-container">
-        <h1 id="game-title" class="hidden">Familiada</h1>
-        <button id="show-title-btn">Pokaż tytuł</button>
-    </div>
+    <h1>Familiada</h1>
     <div id="game-container">
-        <div class="question"></div>
+        <div class="question hidden"></div>
+        <button id="show-question-btn">Pokaż pytanie</button>
         <div id="answers"></div>
     </div>
 
@@ -89,13 +87,13 @@
         };
 
         $(document).ready(function() {
-            // Obsługa przycisku pokazującego tytuł
-            $('#show-title-btn').click(function() {
-                $('#game-title').removeClass('hidden');
+            // Obsługa przycisku pokazującego pytanie
+            $('#show-question-btn').click(function() {
+                $('.question').removeClass('hidden');
                 $(this).hide();
             });
 
-            // Wyświetl pytanie
+            // Ustaw pytanie (ale będzie ukryte)
             $('.question').text(gameData.question);
 
             // Generuj odpowiedzi
