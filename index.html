@@ -101,7 +101,7 @@
                 const answerHtml = `
                     <div class="answer-container">
                         <span class="answer" id="answer-${index}">${answer.text} <span class="points">(${answer.points} pkt)</span></span>
-                        <button onclick="showAnswer(${index})">Pokaż</button>
+                        <button id="button-${index}" onclick="showAnswer(${index})">Pokaż</button>
                     </div>
                 `;
                 $('#answers').append(answerHtml);
@@ -110,6 +110,7 @@
 
         function showAnswer(index) {
             $(`#answer-${index}`).addClass('visible');
+            $(`#button-${index}`).hide();
         }
     </script>
 </body>
