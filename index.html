@@ -44,6 +44,19 @@
             margin-left: 10px;
             display: inline-block;
         }
+        .game-layout {
+            display: grid;
+            grid-template-columns: 200px 1fr 200px;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .team-input {
+            padding: 10px;
+            font-size: 18px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 60px;
+        }
         .wrong-answer-section {
             display: flex;
             align-items: center;
@@ -89,7 +102,15 @@
     <div id="game-container">
         <div class="question hidden"></div>
         <button id="show-question-btn">Pokaż pytanie</button>
-        <div id="answers"></div>
+        <div class="game-layout">
+            <div class="team1">
+                <input type="text" class="team-input" value="Drużyna 1">
+            </div>
+            <div id="answers"></div>
+            <div class="team2">
+                <input type="text" class="team-input" value="Drużyna 2">
+            </div>
+        </div>
         <div class="wrong-answer-section">
             <button id="wrong-answer-btn">Zła odpowiedź</button>
             <div id="wrong-marks"></div>
