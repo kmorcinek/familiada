@@ -5,6 +5,7 @@
     <title>Familiada</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <audio id="wrong-answer-sound" src="https://www.myinstants.com/media/sounds/wrong-answer-sound-effect.mp3"></audio>
+    <audio id="correct-answer-sound" src="https://www.myinstants.com/media/sounds/familiada-dobra-odpowiedz.mp3"></audio>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -236,6 +237,7 @@
         function showAnswer(index) {
             $(`#answer-${index}`).addClass('visible');
             $(`#button-${index}`).hide();
+            document.getElementById('correct-answer-sound').play();
         }
     </script>
 </body>
