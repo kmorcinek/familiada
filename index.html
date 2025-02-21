@@ -144,7 +144,7 @@
         <div class="question hidden"></div>
         <button id="show-question-btn">Pokaż pytanie</button>
         <div id="answers"></div>
-        <div class="wrong-answer-section">
+        <div class="wrong-answer-section hidden">
             <button id="wrong-answer-btn">Zła odpowiedź</button>
             <div id="wrong-marks"></div>
         </div>
@@ -179,6 +179,7 @@
             // Obsługa przycisku pokazującego pytanie
             $('#show-question-btn').click(function() {
                 $('.question').removeClass('hidden');
+                $('.wrong-answer-section').removeClass('hidden');
                 $(this).hide();
             });
 
