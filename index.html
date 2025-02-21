@@ -35,6 +35,14 @@
             font-size: 20px;
             color: #2980b9;
             visibility: hidden;
+            display: flex;
+            align-items: center;
+        }
+        .wrong-mark {
+            color: red;
+            font-size: 24px;
+            margin-right: 10px;
+            visibility: visible;
         }
         .points {
             font-weight: bold;
@@ -72,6 +80,7 @@
         <div class="question hidden"></div>
         <button id="show-question-btn">Pokaż pytanie</button>
         <div id="answers"></div>
+        <button id="wrong-answer-btn">Zła odpowiedź</button>
     </div>
 
     <script>
@@ -85,6 +94,8 @@
                 {"text": "Jaszczur", "points": 5}
             ]
         };
+
+        let wrongAnswersCount = 0;
 
         $(document).ready(function() {
             // Obsługa przycisku pokazującego pytanie
@@ -100,11 +111,32 @@
             gameData.answers.forEach((answer, index) => {
                 const answerHtml = `
                     <div class="answer-container">
-                        <span class="answer" id="answer-${index}">${answer.text} <span class="points">(${answer.points} pkt)</span></span>
+                        <span class="answer" id="answer-${index}">
+                            <span class="wrong-mark" id="wrong-${index}" style="display: none">✗</span>
+                            ${answer.text} <span class="points">(${answer.points} pkt)</span>
+                        </span>
                         <button id="button-${index}" onclick="showAnswer(${index})">Pokaż</button>
                     </div>
                 `;
                 $('#answers').append(answerHtml);
+            });
+
+            // Obsługa przycisku złej odpowiedzi
+            $('#wrong-answer-btn').click(function() {
+                wrongAnswersCount++;
+                
+                // Znajdź pierwszą ukrytą odpowiedź i pokaż przy niej X
+                $('.answer').each(function(index) {
+                    if (!$(this).hasClass('visible') && $('#wrong-' + index).css('display') === 'none') {
+                        $('#wrong-' + index).show();
+                        return false; // przerwij pętlę po znalezieniu pierwszej ukrytej odpowiedzi
+                    }
+                });
+
+                // Po 3 błędnych odpowiedziach ukryj przycisk
+                if (wrongAnswersCount >= 3) {
+                    $(this).hide();
+                }
             });
         });
 
