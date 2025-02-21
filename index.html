@@ -50,11 +50,24 @@
             gap: 20px;
             align-items: center;
         }
+        .team-section {
+            display: flex;
+            gap: 10px;
+        }
         .team-input {
             padding: 10px;
             font-size: 18px;
-            width: 100%;
+            width: 70%;
             box-sizing: border-box;
+        }
+        .team-points {
+            padding: 10px;
+            font-size: 18px;
+            width: 30%;
+            box-sizing: border-box;
+            background-color: #e8e8e8;
+            border: 1px solid #ccc;
+            text-align: center;
         }
         .wrong-answer-section {
             display: flex;
@@ -98,12 +111,14 @@
 </head>
 <body>
     <div class="header-layout">
-        <div class="team1">
+        <div class="team1 team-section">
             <input type="text" class="team-input" value="Drużyna 1">
+            <input type="text" class="team-points" id="team1-points" value="0" readonly>
         </div>
         <h1>Familiada</h1>
-        <div class="team2">
+        <div class="team2 team-section">
             <input type="text" class="team-input" value="Drużyna 2">
+            <input type="text" class="team-points" id="team2-points" value="0" readonly>
         </div>
     </div>
     <div id="game-container">
@@ -129,6 +144,8 @@
         };
 
         let wrongAnswersCount = 0;
+        let team1Points = 0;
+        let team2Points = 0;
 
         $(document).ready(function() {
             // Obsługa przycisku pokazującego pytanie
@@ -170,6 +187,10 @@
         function showAnswer(index) {
             $(`#answer-${index}`).addClass('visible');
             $(`#button-${index}`).hide();
+            
+            // Dodaj punkty do aktualnej drużyny (na razie tylko do pierwszej)
+            team1Points += gameData.answers[index].points;
+            $('#team1-points').val(team1Points);
         }
     </script>
 </body>
