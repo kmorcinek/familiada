@@ -53,11 +53,12 @@
         .team-section {
             display: flex;
             gap: 10px;
+            align-items: center;
         }
         .team-input {
             padding: 10px;
             font-size: 18px;
-            width: 70%;
+            width: 50%;
             box-sizing: border-box;
         }
         .team-points {
@@ -68,6 +69,18 @@
             background-color: #e8e8e8;
             border: 1px solid #ccc;
             text-align: center;
+        }
+        .add-points-btn {
+            padding: 5px 10px;
+            font-size: 18px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .add-points-btn:hover {
+            background-color: #219a52;
         }
         .wrong-answer-section {
             display: flex;
@@ -114,11 +127,13 @@
         <div class="team1 team-section">
             <input type="text" class="team-input" value="Drużyna 1">
             <input type="text" class="team-points" id="team1-points" value="0" readonly>
+            <button class="add-points-btn" id="team1-add">+</button>
         </div>
         <h1>Familiada</h1>
         <div class="team2 team-section">
             <input type="text" class="team-input" value="Drużyna 2">
             <input type="text" class="team-points" id="team2-points" value="0" readonly>
+            <button class="add-points-btn" id="team2-add">+</button>
         </div>
     </div>
     <div id="game-container">
