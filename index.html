@@ -14,6 +14,20 @@
             padding: 20px;
             background-color: #f0f0f0;
         }
+        .tooltip {
+            position: fixed;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 1000;
+            max-width: 300px;
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
         h1 {
             text-align: center;
             color: #2c3e50;
@@ -192,6 +206,17 @@
         let gameData = gameQuestions[currentQuestionIndex];
 
         let wrongAnswersCount = 0;
+        
+        function showTooltip(message, element) {
+            const tooltip = $('<div class="tooltip"></div>').text(message);
+            const rect = element.getBoundingClientRect();
+            tooltip.css({
+                top: rect.bottom + 10 + 'px',
+                left: rect.left + 'px'
+            });
+            $('body').append(tooltip);
+            setTimeout(() => tooltip.remove(), 3000);
+        }
         let team1Points = 0;
         let team2Points = 0;
 
@@ -241,6 +266,7 @@
                 $('#answers').removeClass('hidden');
                 $('.wrong-answer-section').removeClass('hidden');
                 $(this).hide();
+                showTooltip('Prowadzący czyta pytanie dla obu drużyn', this);
             });
 
             // Załaduj pierwsze pytanie
