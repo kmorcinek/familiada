@@ -150,23 +150,80 @@
             <button id="wrong-answer-btn">Zła odpowiedź</button>
             <div id="wrong-marks"></div>
         </div>
+        <div class="next-question-section" style="text-align: center; margin-top: 20px;">
+            <button id="next-question-btn" class="hidden">Następne pytanie</button>
+        </div>
     </div>
 
     <script>
-        const gameData = {
-            "question": "Popularny owoc zaczynający się na literę 'J'",
-            "answers": [
-                {"text": "Jabłko", "points": 45},
-                {"text": "Jagody", "points": 25},
-                {"text": "Jeżyny", "points": 15},
-                {"text": "Jarzębina", "points": 10},
-                {"text": "Jaszczur", "points": 5}
-            ]
-        };
+        const gameQuestions = [
+            {
+                "question": "Popularny owoc zaczynający się na literę 'J'",
+                "answers": [
+                    {"text": "Jabłko", "points": 45},
+                    {"text": "Jagody", "points": 25},
+                    {"text": "Jeżyny", "points": 15},
+                    {"text": "Jarzębina", "points": 10},
+                    {"text": "Jaszczur", "points": 5}
+                ]
+            },
+            {
+                "question": "Popularny sport zimowy",
+                "answers": [
+                    {"text": "Narciarstwo", "points": 35},
+                    {"text": "Hokej", "points": 25},
+                    {"text": "Łyżwiarstwo", "points": 20},
+                    {"text": "Saneczkarstwo", "points": 15},
+                    {"text": "Curling", "points": 5}
+                ]
+            },
+            {
+                "question": "Co najczęściej znajduje się w lodówce?",
+                "answers": [
+                    {"text": "Mleko", "points": 40},
+                    {"text": "Ser", "points": 30},
+                    {"text": "Masło", "points": 15},
+                    {"text": "Jajka", "points": 10},
+                    {"text": "Wędlina", "points": 5}
+                ]
+            }
+        ];
+        let currentQuestionIndex = 0;
+        let gameData = gameQuestions[currentQuestionIndex];
 
         let wrongAnswersCount = 0;
         let team1Points = 0;
         let team2Points = 0;
+
+        function resetGameState() {
+            wrongAnswersCount = 0;
+            $('#wrong-marks').empty();
+            $('#wrong-answer-btn').show();
+            $('#answers').empty();
+            $('.question').addClass('hidden');
+            $('#answers').addClass('hidden');
+            $('.wrong-answer-section').addClass('hidden');
+            $('#show-question-btn').show();
+            $('#team1-add, #team2-add').prop('disabled', false);
+            $('#next-question-btn').addClass('hidden');
+        }
+
+        function loadQuestion() {
+            gameData = gameQuestions[currentQuestionIndex];
+            $('.question').text(gameData.question);
+            
+            gameData.answers.forEach((answer, index) => {
+                const answerHtml = `
+                    <div class="answer-container">
+                        <span class="answer" id="answer-${index}">
+                            ${answer.text} <span class="points">(${answer.points} pkt)</span>
+                        </span>
+                        <button id="button-${index}" onclick="showAnswer(${index})">Pokaż</button>
+                    </div>
+                `;
+                $('#answers').append(answerHtml);
+            });
+        }
 
         function calculateVisiblePoints() {
             let points = 0;
@@ -186,21 +243,8 @@
                 $(this).hide();
             });
 
-            // Ustaw pytanie (ale będzie ukryte)
-            $('.question').text(gameData.question);
-
-            // Generuj odpowiedzi
-            gameData.answers.forEach((answer, index) => {
-                const answerHtml = `
-                    <div class="answer-container">
-                        <span class="answer" id="answer-${index}">
-                            ${answer.text} <span class="points">(${answer.points} pkt)</span>
-                        </span>
-                        <button id="button-${index}" onclick="showAnswer(${index})">Pokaż</button>
-                    </div>
-                `;
-                $('#answers').append(answerHtml);
-            });
+            // Załaduj pierwsze pytanie
+            loadQuestion();
 
             // Obsługa przycisku złej odpowiedzi
             $('#wrong-answer-btn').click(function() {
@@ -231,6 +275,23 @@
                 team2Points += pointsToAdd;
                 $('#team2-points').val(team2Points);
                 $(this).prop('disabled', true);
+                
+                // Pokaż przycisk następnego pytania gdy obie drużyny dodały punkty
+                if ($('#team1-add').prop('disabled') && $('#team2-add').prop('disabled')) {
+                    $('#next-question-btn').removeClass('hidden');
+                }
+            });
+
+            // Obsługa przycisku następnego pytania
+            $('#next-question-btn').click(function() {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < gameQuestions.length) {
+                    resetGameState();
+                    loadQuestion();
+                } else {
+                    alert('Koniec gry! Końcowy wynik:\nDrużyna 1: ' + team1Points + ' punktów\nDrużyna 2: ' + team2Points + ' punktów');
+                    $(this).prop('disabled', true);
+                }
             });
         });
 
