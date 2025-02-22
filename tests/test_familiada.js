@@ -18,55 +18,108 @@ describe('Familiada Game Tests', function() {
         await driver.quit();
     });
 
-    it('should play through complete game flow with multiple answers and wrong answers', async function() {
-        try {
-            // 1. Check title
-            const title = await driver.findElement(By.css('h1'));
-            expect(await title.getText()).to.equal('Familiada');
+    it('should initialize game correctly', async function() {
+        const title = await driver.findElement(By.css('h1'));
+        expect(await title.getText()).to.equal('Familiada');
+        
+        const team1Input = await driver.findElement(By.css('.team1 .team-input'));
+        expect(await team1Input.getAttribute('value')).to.equal('Drużyna 1');
+        
+        const team2Input = await driver.findElement(By.css('.team2 .team-input'));
+        expect(await team2Input.getAttribute('value')).to.equal('Drużyna 2');
+        
+        const showQuestionBtn = await driver.findElement(By.id('show-question-btn'));
+        expect(await showQuestionBtn.isDisplayed()).to.be.true;
+    });
 
-            // 2. Click 'Show question'
-            const showQuestionBtn = await driver.findElement(By.id('show-question-btn'));
-            await showQuestionBtn.click();
-            await driver.sleep(1000); // Wait for animations
+    it('should show question and answers when show question button is clicked', async function() {
+        const showQuestionBtn = await driver.findElement(By.id('show-question-btn'));
+        await showQuestionBtn.click();
+        await driver.sleep(1000);
 
-            // Check if question is visible
-            const question = await driver.findElement(By.className('question'));
-            expect(await question.isDisplayed()).to.be.true;
+        const question = await driver.findElement(By.className('question'));
+        expect(await question.isDisplayed()).to.be.true;
 
-            // 3. Click 'Show' for first three answers
-            for (let i = 0; i < 3; i++) {
-                const showAnswerBtn = await driver.findElement(By.id(`button-${i}`));
-                await showAnswerBtn.click();
-                await driver.sleep(1000); // Shorter wait for animations
-            }
+        const answers = await driver.findElement(By.id('answers'));
+        expect(await answers.isDisplayed()).to.be.true;
 
-            // 4. Click wrong answer button twice
-            const wrongAnswerBtn = await driver.findElement(By.id('wrong-answer-btn'));
-            for (let i = 0; i < 2; i++) {
-                await wrongAnswerBtn.click();
-                await driver.sleep(1000); // Shorter wait for animations
-            }
+        const wrongAnswerSection = await driver.findElement(By.className('wrong-answer-section'));
+        expect(await wrongAnswerSection.isDisplayed()).to.be.true;
+    });
 
-            // 5. Click '+' for first team
-            const addPointsBtn = await driver.findElement(By.id('team1-add'));
-            await addPointsBtn.click();
+    it('should handle wrong answers correctly', async function() {
+        const showQuestionBtn = await driver.findElement(By.id('show-question-btn'));
+        await showQuestionBtn.click();
+        await driver.sleep(1000);
 
-            // 5. Check if points were added
-            const team1Points = await driver.findElement(By.id('team1-points'));
-            expect(await team1Points.getAttribute('value')).to.not.equal('0');
-
-            // 6. Check if 'Next question' button is visible
-            const nextQuestionBtn = await driver.findElement(By.id('next-question-btn'));
-            expect(await nextQuestionBtn.isDisplayed()).to.be.true;
-
-            // 7. Test ends after first question
-            expect(await nextQuestionBtn.isDisplayed()).to.be.true;
-
-        } catch (error) {
-            // Save screenshot on error
-            const screenshot = await driver.takeScreenshot();
-            require('fs').writeFileSync('error.png', screenshot, 'base64');
-            throw error;
+        const wrongAnswerBtn = await driver.findElement(By.id('wrong-answer-btn'));
+        
+        // Click wrong answer three times
+        for (let i = 0; i < 3; i++) {
+            await wrongAnswerBtn.click();
+            await driver.sleep(1000);
         }
+
+        // Check if wrong answer marks are visible
+        const wrongMarks = await driver.findElements(By.className('wrong-mark'));
+        expect(wrongMarks.length).to.equal(3);
+
+        // Check if wrong answer button is hidden after 3 wrong answers
+        expect(await wrongAnswerBtn.isDisplayed()).to.be.false;
+    });
+
+    it('should handle points system correctly', async function() {
+        const showQuestionBtn = await driver.findElement(By.id('show-question-btn'));
+        await showQuestionBtn.click();
+        await driver.sleep(1000);
+
+        // Show first answer through BroadcastChannel simulation
+        await driver.executeScript(`
+            const answer = document.getElementById('answer-0');
+            answer.classList.add('visible');
+        `);
+
+        // Add points to team 1
+        const team1AddBtn = await driver.findElement(By.id('team1-add'));
+        await team1AddBtn.click();
+
+        // Check if points were added and buttons are disabled
+        const team1Points = await driver.findElement(By.id('team1-points'));
+        expect(await team1Points.getAttribute('value')).to.not.equal('0');
+
+        const team2AddBtn = await driver.findElement(By.id('team2-add'));
+        expect(await team1AddBtn.getAttribute('disabled')).to.equal('true');
+        expect(await team2AddBtn.getAttribute('disabled')).to.equal('true');
+
+        // Check if next question button is visible
+        const nextQuestionBtn = await driver.findElement(By.id('next-question-btn'));
+        expect(await nextQuestionBtn.isDisplayed()).to.be.true;
+    });
+
+    it('should handle next question functionality', async function() {
+        // Show and complete first question
+        const showQuestionBtn = await driver.findElement(By.id('show-question-btn'));
+        await showQuestionBtn.click();
+        await driver.sleep(1000);
+
+        await driver.executeScript(`
+            const answer = document.getElementById('answer-0');
+            answer.classList.add('visible');
+        `);
+
+        const team1AddBtn = await driver.findElement(By.id('team1-add'));
+        await team1AddBtn.click();
+
+        // Go to next question
+        const nextQuestionBtn = await driver.findElement(By.id('next-question-btn'));
+        await nextQuestionBtn.click();
+        await driver.sleep(1000);
+
+        // Check if game state was reset
+        const newShowQuestionBtn = await driver.findElement(By.id('show-question-btn'));
+        expect(await newShowQuestionBtn.isDisplayed()).to.be.true;
+
+        const wrongMarks = await driver.findElements(By.className('wrong-mark'));
+        expect(wrongMarks.length).to.equal(0);
     });
 });
