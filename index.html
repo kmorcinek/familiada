@@ -310,6 +310,16 @@
             return points;
         }
 
+        // Inicjalizacja kanału komunikacji
+        const channel = new BroadcastChannel('familiada');
+        
+        // Nasłuchuj na wiadomości z kontrolera
+        channel.onmessage = (event) => {
+            if (event.data.type === 'showAnswer') {
+                showAnswer(event.data.index);
+            }
+        };
+
         $(document).ready(function() {
             // Obsługa przycisku pokazującego pytanie
             $('#show-question-btn').click(function() {
@@ -321,6 +331,12 @@
 
             // Załaduj pierwsze pytanie
             loadQuestion();
+            
+            // Wyślij odpowiedzi do kontrolera
+            channel.postMessage({
+                type: 'loadAnswers',
+                answers: gameData.answers
+            });
 
             // Obsługa przycisku złej odpowiedzi
             $('#wrong-answer-btn').click(function() {
@@ -364,6 +380,11 @@
                 if (currentQuestionIndex < gameQuestions.length) {
                     resetGameState();
                     loadQuestion();
+                    // Wyślij nowe odpowiedzi do kontrolera
+                    channel.postMessage({
+                        type: 'loadAnswers',
+                        answers: gameData.answers
+                    });
                 } else {
                     const winner = team1Points > team2Points ? 'Drużyna 1' : team1Points < team2Points ? 'Drużyna 2' : 'Remis';
                     const winnerText = winner === 'Remis' ? 'Remis!' : `Zwycięzca: ${winner}!`;
