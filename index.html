@@ -14,20 +14,6 @@
             padding: 20px;
             background-color: #f0f0f0;
         }
-        .tooltip {
-            position: fixed;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            z-index: 1000;
-            max-width: 300px;
-            animation: fadeIn 0.3s;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
         h1 {
             text-align: center;
             color: #2c3e50;
@@ -207,16 +193,6 @@
 
         let wrongAnswersCount = 0;
         
-        function showTooltip(message, element) {
-            const tooltip = $('<div class="tooltip"></div>').text(message);
-            const rect = element.getBoundingClientRect();
-            tooltip.css({
-                top: rect.bottom + 10 + 'px',
-                left: rect.left + 'px'
-            });
-            $('body').append(tooltip);
-            setTimeout(() => tooltip.remove(), 6000); // Zwiększone do 6 sekund dla lepszej czytelności
-        }
         let team1Points = 0;
         let team2Points = 0;
 
@@ -266,7 +242,6 @@
                 $('#answers').removeClass('hidden');
                 $('.wrong-answer-section').removeClass('hidden');
                 $(this).hide();
-                showTooltip('Prowadzący czyta pytanie dla obu drużyn', this);
             });
 
             // Załaduj pierwsze pytanie
@@ -282,7 +257,6 @@
                 // Dodaj X do sekcji złych odpowiedzi
                 $('#wrong-marks').append('<span class="wrong-mark">✗</span>');
                 
-                showTooltip(`Zła odpowiedź numer ${wrongAnswersCount}`, this);
 
                 // Po 3 błędnych odpowiedziach ukryj przycisk
                 if (wrongAnswersCount >= 3) {
@@ -298,7 +272,6 @@
                 $(this).prop('disabled', true);
                 $('#team2-add').prop('disabled', true);
                 $('#next-question-btn').removeClass('hidden');
-                showTooltip(`Drużyna 1 zdobywa ${pointsToAdd} punktów!`, this);
             });
 
             $('#team2-add').click(function() {
@@ -308,18 +281,15 @@
                 $(this).prop('disabled', true);
                 $('#team1-add').prop('disabled', true);
                 $('#next-question-btn').removeClass('hidden');
-                showTooltip(`Drużyna 2 zdobywa ${pointsToAdd} punktów!`, this);
             });
 
             // Obsługa przycisku następnego pytania
             $('#next-question-btn').click(function() {
                 currentQuestionIndex++;
                 if (currentQuestionIndex < gameQuestions.length) {
-                    showTooltip('Przechodzimy do następnego pytania!', this);
                     resetGameState();
                     loadQuestion();
                 } else {
-                    showTooltip('Koniec gry!', this);
                     alert('Koniec gry! Końcowy wynik:\nDrużyna 1: ' + team1Points + ' punktów\nDrużyna 2: ' + team2Points + ' punktów');
                     $(this).prop('disabled', true);
                 }
@@ -330,7 +300,6 @@
             $(`#answer-${index}`).addClass('visible');
             $(`#button-${index}`).hide();
             document.getElementById('correct-answer-sound').play();
-            showTooltip(`Pokazano odpowiedź numer ${index + 1}`, document.getElementById(`button-${index}`));
         }
     </script>
 </body>
