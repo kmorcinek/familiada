@@ -341,7 +341,8 @@
             });
 
             // Obsługa przycisku złej odpowiedzi
-            $('#wrong-answer-btn').click(function() {
+            $('#wrong-answer-btn').click(async function() {
+                await new Promise(resolve => setTimeout(resolve, 5000));
                 wrongAnswersCount++;
                 
                 // Odtwórz dźwięk złej odpowiedzi
@@ -358,7 +359,8 @@
             });
 
             // Obsługa przycisków dodawania punktów
-            $('#team1-add').click(function() {
+            $('#team1-add').click(async function() {
+                await new Promise(resolve => setTimeout(resolve, 5000));
                 const pointsToAdd = calculateVisiblePoints();
                 team1Points += pointsToAdd;
                 $('#team1-points').val(team1Points);
@@ -367,7 +369,8 @@
                 $('#next-question-btn').removeClass('hidden');
             });
 
-            $('#team2-add').click(function() {
+            $('#team2-add').click(async function() {
+                await new Promise(resolve => setTimeout(resolve, 5000));
                 const pointsToAdd = calculateVisiblePoints();
                 team2Points += pointsToAdd;
                 $('#team2-points').val(team2Points);
@@ -377,7 +380,8 @@
             });
 
             // Obsługa przycisku następnego pytania
-            $('#next-question-btn').click(function() {
+            $('#next-question-btn').click(async function() {
+                await new Promise(resolve => setTimeout(resolve, 5000));
                 currentQuestionIndex++;
                 if (currentQuestionIndex < gameQuestions.length) {
                     resetGameState();
@@ -396,7 +400,8 @@
             });
         });
 
-        function showAnswer(index) {
+        async function showAnswer(index) {
+            await new Promise(resolve => setTimeout(resolve, 5000));
             $(`#answer-${index}`).addClass('visible');
             $(`#button-${index}`).hide();
             document.getElementById('correct-answer-sound').play();
