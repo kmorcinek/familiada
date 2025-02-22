@@ -156,7 +156,7 @@
     </div>
 
     <script>
-        const gameQuestions = [
+        const allGameQuestions = [
             {
                 "question": "Popularny owoc zaczynający się na literę 'J'",
                 "answers": [
@@ -186,8 +186,83 @@
                     {"text": "Jajka", "points": 10},
                     {"text": "Wędlina", "points": 5}
                 ]
+            },
+            {
+                "question": "Popularne zwierzę domowe",
+                "answers": [
+                    {"text": "Pies", "points": 40},
+                    {"text": "Kot", "points": 35},
+                    {"text": "Chomik", "points": 15},
+                    {"text": "Papuga", "points": 5},
+                    {"text": "Rybki", "points": 5}
+                ]
+            },
+            {
+                "question": "Co ludzie robią w weekend?",
+                "answers": [
+                    {"text": "Odpoczywają", "points": 35},
+                    {"text": "Sprzątają", "points": 25},
+                    {"text": "Oglądają TV", "points": 20},
+                    {"text": "Spotykają się", "points": 15},
+                    {"text": "Śpią", "points": 5}
+                ]
+            },
+            {
+                "question": "Popularne warzywo",
+                "answers": [
+                    {"text": "Marchewka", "points": 35},
+                    {"text": "Ziemniak", "points": 30},
+                    {"text": "Pomidor", "points": 20},
+                    {"text": "Ogórek", "points": 10},
+                    {"text": "Cebula", "points": 5}
+                ]
+            },
+            {
+                "question": "Co można znaleźć w parku?",
+                "answers": [
+                    {"text": "Ławka", "points": 35},
+                    {"text": "Drzewa", "points": 30},
+                    {"text": "Plac zabaw", "points": 20},
+                    {"text": "Kwiaty", "points": 10},
+                    {"text": "Ptaki", "points": 5}
+                ]
+            },
+            {
+                "question": "Popularne zawody",
+                "answers": [
+                    {"text": "Nauczyciel", "points": 35},
+                    {"text": "Lekarz", "points": 30},
+                    {"text": "Kierowca", "points": 20},
+                    {"text": "Kucharz", "points": 10},
+                    {"text": "Prawnik", "points": 5}
+                ]
+            },
+            {
+                "question": "Co można kupić w piekarni?",
+                "answers": [
+                    {"text": "Chleb", "points": 40},
+                    {"text": "Bułki", "points": 30},
+                    {"text": "Pączki", "points": 15},
+                    {"text": "Rogale", "points": 10},
+                    {"text": "Drożdżówki", "points": 5}
+                ]
+            },
+            {
+                "question": "Popularne kolory",
+                "answers": [
+                    {"text": "Czerwony", "points": 35},
+                    {"text": "Niebieski", "points": 30},
+                    {"text": "Zielony", "points": 20},
+                    {"text": "Żółty", "points": 10},
+                    {"text": "Czarny", "points": 5}
+                ]
             }
         ];
+        
+        // Losowo wybierz 10 pytań
+        const gameQuestions = [...allGameQuestions]
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 10);
         let currentQuestionIndex = 0;
         let gameData = gameQuestions[currentQuestionIndex];
 
@@ -290,7 +365,9 @@
                     resetGameState();
                     loadQuestion();
                 } else {
-                    alert('Koniec gry! Końcowy wynik:\nDrużyna 1: ' + team1Points + ' punktów\nDrużyna 2: ' + team2Points + ' punktów');
+                    const winner = team1Points > team2Points ? 'Drużyna 1' : team1Points < team2Points ? 'Drużyna 2' : 'Remis';
+                    const winnerText = winner === 'Remis' ? 'Remis!' : `Zwycięzca: ${winner}!`;
+                    alert(`Koniec gry!\n${winnerText}\nDrużyna 1: ${team1Points} punktów\nDrużyna 2: ${team2Points} punktów`);
                     $(this).prop('disabled', true);
                 }
             });
