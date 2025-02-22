@@ -6,7 +6,7 @@ describe('Familiada Game Tests', function() {
     let driver;
     
     // Increase timeout for slower operations
-    this.timeout(10000);
+    this.timeout(60000); // Zwiększenie timeoutu do 60 sekund
 
     beforeEach(async function() {
         driver = await new Builder().forBrowser('chrome').build();
@@ -37,7 +37,7 @@ describe('Familiada Game Tests', function() {
             for (let i = 0; i < 3; i++) {
                 const showAnswerBtn = await driver.findElement(By.id(`button-${i}`));
                 await showAnswerBtn.click();
-                await driver.sleep(3000); // Dłuższe oczekiwanie na dźwięk i animacje
+                await driver.sleep(6000); // Dłuższe oczekiwanie na dźwięk, animacje i tooltip
             }
 
             // 4. Click wrong answer button twice

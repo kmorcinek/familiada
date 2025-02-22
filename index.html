@@ -281,6 +281,8 @@
                 
                 // Dodaj X do sekcji złych odpowiedzi
                 $('#wrong-marks').append('<span class="wrong-mark">✗</span>');
+                
+                showTooltip(`Zła odpowiedź numer ${wrongAnswersCount}`, this);
 
                 // Po 3 błędnych odpowiedziach ukryj przycisk
                 if (wrongAnswersCount >= 3) {
@@ -296,6 +298,7 @@
                 $(this).prop('disabled', true);
                 $('#team2-add').prop('disabled', true);
                 $('#next-question-btn').removeClass('hidden');
+                showTooltip(`Drużyna 1 zdobywa ${pointsToAdd} punktów!`, this);
             });
 
             $('#team2-add').click(function() {
@@ -305,15 +308,18 @@
                 $(this).prop('disabled', true);
                 $('#team1-add').prop('disabled', true);
                 $('#next-question-btn').removeClass('hidden');
+                showTooltip(`Drużyna 2 zdobywa ${pointsToAdd} punktów!`, this);
             });
 
             // Obsługa przycisku następnego pytania
             $('#next-question-btn').click(function() {
                 currentQuestionIndex++;
                 if (currentQuestionIndex < gameQuestions.length) {
+                    showTooltip('Przechodzimy do następnego pytania!', this);
                     resetGameState();
                     loadQuestion();
                 } else {
+                    showTooltip('Koniec gry!', this);
                     alert('Koniec gry! Końcowy wynik:\nDrużyna 1: ' + team1Points + ' punktów\nDrużyna 2: ' + team2Points + ' punktów');
                     $(this).prop('disabled', true);
                 }
@@ -324,6 +330,7 @@
             $(`#answer-${index}`).addClass('visible');
             $(`#button-${index}`).hide();
             document.getElementById('correct-answer-sound').play();
+            showTooltip(`Pokazano odpowiedź numer ${index + 1}`, document.getElementById(`button-${index}`));
         }
     </script>
 </body>
