@@ -268,6 +268,11 @@
                 team1Points += pointsToAdd;
                 $('#team1-points').val(team1Points);
                 $(this).prop('disabled', true);
+                
+                // Pokaż przycisk następnego pytania gdy obie drużyny dodały punkty
+                if ($('#team1-add').prop('disabled') && $('#team2-add').prop('disabled')) {
+                    $('#next-question-btn').removeClass('hidden');
+                }
             });
 
             $('#team2-add').click(function() {
