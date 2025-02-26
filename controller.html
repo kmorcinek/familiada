@@ -62,11 +62,8 @@
                 type: 'requestAnswers'
             });
             
-            // Enable all answer buttons
-            const answerButtons = document.querySelectorAll('.answer-button:not(#show-question-btn):not(#wrong-answer-btn):not(#next-question-btn)');
-            answerButtons.forEach(button => {
-                button.disabled = false;
-            });
+            // Disable the show question button after clicking
+            this.disabled = true;
         });
         
         // Obsługa przycisku złej odpowiedzi
@@ -92,6 +89,7 @@
                 document.getElementById('wrong-answer-btn').disabled = true;
             } else if (event.data.type === 'resetWrongButton') {
                 document.getElementById('wrong-answer-btn').disabled = false;
+                document.getElementById('show-question-btn').disabled = false;
             } else if (event.data.type === 'enableNextButton') {
                 document.getElementById('next-question-btn').style.display = 'block';
             } else if (event.data.type === 'disableNextButton') {
@@ -106,8 +104,8 @@
                     const button = document.createElement('button');
                     button.className = 'answer-button';
                     button.textContent = `Pokaż odpowiedź ${index + 1}: ${answer.text}`;
-                    // Disable answer buttons by default until "Pokaż pytanie" is clicked
-                    button.disabled = true;
+                    // Enable answer buttons only if show question button is disabled (question is shown)
+                    button.disabled = !document.getElementById('show-question-btn').disabled;
                     button.onclick = () => {
                         document.getElementById('button-click-sound').play();
                         channel.postMessage({
