@@ -6,21 +6,23 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 600px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 30px;
             background-color: #f0f0f0;
+            font-size: 27px; /* Base font size 1.5x */
         }
         .answer-button {
             display: block;
             width: 100%;
-            padding: 10px;
-            margin: 5px 0;
+            padding: 15px;
+            margin: 8px 0;
             background-color: #3498db;
             color: white;
             border: none;
-            border-radius: 3px;
+            border-radius: 5px;
             cursor: pointer;
+            font-size: 27px; /* Button text 1.5x */
         }
         .answer-button:hover {
             background-color: #2980b9;
@@ -32,8 +34,8 @@
     </style>
 </head>
 <body>
-    <h2>Kontroler odpowiedzi</h2>
-    <button id="wrong-answer-btn" class="answer-button" style="background-color: #e74c3c; margin-bottom: 20px;">Zła odpowiedź</button>
+    <h2 style="font-size: 45px;">Kontroler odpowiedzi</h2>
+    <button id="wrong-answer-btn" class="answer-button" style="background-color: #e74c3c; margin-bottom: 30px; font-size: 36px;">Zła odpowiedź</button>
     <div id="answers-container"></div>
 
     <script>
