@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Kontroler Familiady</title>
+    <audio id="button-click-sound" src="https://www.myinstants.com/media/sounds/button-click.mp3"></audio>
+    <audio id="show-question-sound" src="https://www.myinstants.com/media/sounds/game-start.mp3"></audio>
+    <audio id="wrong-answer-sound" src="https://www.myinstants.com/media/sounds/wrong-answer-sound-effect.mp3"></audio>
+    <audio id="next-question-sound" src="https://www.myinstants.com/media/sounds/game-level-complete.mp3"></audio>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -49,6 +53,7 @@
         
         // Obsługa przycisku pokazującego pytanie
         document.getElementById('show-question-btn').addEventListener('click', function() {
+            document.getElementById('show-question-sound').play();
             channel.postMessage({
                 type: 'showQuestion'
             });
@@ -60,6 +65,7 @@
         
         // Obsługa przycisku złej odpowiedzi
         document.getElementById('wrong-answer-btn').addEventListener('click', function() {
+            document.getElementById('wrong-answer-sound').play();
             channel.postMessage({
                 type: 'wrongAnswer'
             });
@@ -67,6 +73,7 @@
         
         // Obsługa przycisku następnego pytania
         document.getElementById('next-question-btn').addEventListener('click', function() {
+            document.getElementById('next-question-sound').play();
             channel.postMessage({
                 type: 'nextQuestion'
             });
@@ -94,6 +101,7 @@
                     button.className = 'answer-button';
                     button.textContent = `Pokaż odpowiedź ${index + 1}: ${answer.text}`;
                     button.onclick = () => {
+                        document.getElementById('button-click-sound').play();
                         channel.postMessage({
                             type: 'showAnswer',
                             index: index

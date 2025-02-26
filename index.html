@@ -6,6 +6,9 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <audio id="wrong-answer-sound" src="https://www.myinstants.com/media/sounds/wrong-answer-sound-effect.mp3"></audio>
     <audio id="correct-answer-sound" src="https://www.myinstants.com/media/sounds/correct-answer.mp3"></audio>
+    <audio id="button-click-sound" src="https://www.myinstants.com/media/sounds/button-click.mp3"></audio>
+    <audio id="next-question-sound" src="https://www.myinstants.com/media/sounds/game-level-complete.mp3"></audio>
+    <audio id="add-points-sound" src="https://www.myinstants.com/media/sounds/cash-register-sound-effect.mp3"></audio>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -355,6 +358,7 @@
 
             // Obsługa przycisków dodawania punktów
             $('#team1-add').click(function() {
+                document.getElementById('add-points-sound').play();
                 const pointsToAdd = calculateVisiblePoints();
                 team1Points += pointsToAdd;
                 $('#team1-points').val(team1Points);
@@ -364,6 +368,7 @@
             });
 
             $('#team2-add').click(function() {
+                document.getElementById('add-points-sound').play();
                 const pointsToAdd = calculateVisiblePoints();
                 team2Points += pointsToAdd;
                 $('#team2-points').val(team2Points);
@@ -392,6 +397,7 @@
         }
         
         function nextQuestion() {
+            document.getElementById('next-question-sound').play();
             currentQuestionIndex++;
             if (currentQuestionIndex < gameQuestions.length) {
                 resetGameState();
