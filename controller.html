@@ -77,7 +77,7 @@
             });
         });
         
-        // Disable wrong answer button initially
+        // Make sure wrong answer button is disabled initially
         document.getElementById('wrong-answer-btn').disabled = true;
         
         // Obsługa przycisku następnego pytania
@@ -94,7 +94,7 @@
             if (event.data.type === 'disableWrongButton') {
                 document.getElementById('wrong-answer-btn').disabled = true;
             } else if (event.data.type === 'resetWrongButton') {
-                document.getElementById('wrong-answer-btn').disabled = false;
+                document.getElementById('wrong-answer-btn').disabled = true; // Keep disabled until question is shown
                 document.getElementById('show-question-btn').disabled = false;
             } else if (event.data.type === 'enableNextButton') {
                 document.getElementById('next-question-btn').style.display = 'block';
