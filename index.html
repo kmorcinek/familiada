@@ -15,11 +15,6 @@
             background-color: #f0f0f0;
             font-size: 18px; /* Base font size increased */
         }
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-            font-size: 42px; /* Larger heading */
-        }
         .question {
             font-size: 32px; /* Larger question text */
             margin: 20px 0;
@@ -52,16 +47,24 @@
             margin-left: 15px;
             display: inline-block;
         }
-        .header-layout {
-            display: grid;
-            grid-template-columns: 200px 1fr 200px;
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 42px; /* Larger heading */
+            margin-bottom: 30px;
+        }
+        .teams-layout {
+            display: flex;
+            justify-content: space-between;
             gap: 20px;
-            align-items: center;
+            margin-bottom: 30px;
         }
         .team-section {
             display: flex;
             gap: 10px;
             align-items: center;
+            flex: 1;
+            justify-content: center;
         }
         .team-input {
             padding: 10px;
@@ -139,13 +142,13 @@
     </style>
 </head>
 <body>
-    <div class="header-layout">
+    <h1>Familiada</h1>
+    <div class="teams-layout">
         <div class="team1 team-section">
             <input type="text" class="team-input" value="Drużyna 1">
             <input type="text" class="team-points" id="team1-points" value="0" readonly>
             <button class="add-points-btn" id="team1-add">+</button>
         </div>
-        <h1>Familiada</h1>
         <div class="team2 team-section">
             <input type="text" class="team-input" value="Drużyna 2">
             <input type="text" class="team-points" id="team2-points" value="0" readonly>
