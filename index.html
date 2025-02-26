@@ -157,7 +157,6 @@
         <button id="show-question-btn">Pokaż pytanie</button>
         <div id="answers" class="hidden"></div>
         <div class="wrong-answer-section hidden">
-            <button id="wrong-answer-btn">Zła odpowiedź</button>
             <div id="wrong-marks"></div>
         </div>
         <div class="next-question-section" style="text-align: center; margin-top: 20px;">
@@ -284,7 +283,6 @@
         function resetGameState() {
             wrongAnswersCount = 0;
             $('#wrong-marks').empty();
-            $('#wrong-answer-btn').show();
             $('#answers').empty();
             $('.question').addClass('hidden');
             $('#answers').addClass('hidden');
@@ -292,6 +290,11 @@
             $('#show-question-btn').show();
             $('#team1-add, #team2-add').prop('disabled', false);
             $('#next-question-btn').addClass('hidden');
+            
+            // Reset wrong answer button in controller
+            channel.postMessage({
+                type: 'resetWrongButton'
+            });
         }
 
         function loadQuestion() {
@@ -326,6 +329,8 @@
         channel.onmessage = (event) => {
             if (event.data.type === 'showAnswer') {
                 showAnswer(event.data.index);
+            } else if (event.data.type === 'wrongAnswer') {
+                handleWrongAnswer();
             }
         };
 
@@ -347,23 +352,6 @@
                 answers: gameData.answers
             });
 
-            // Obsługa przycisku złej odpowiedzi
-            $('#wrong-answer-btn').click(async function() {
-                await new Promise(resolve => setTimeout(resolve, 5000));
-                wrongAnswersCount++;
-                
-                // Odtwórz dźwięk złej odpowiedzi
-                document.getElementById('wrong-answer-sound').play();
-                
-                // Dodaj X do sekcji złych odpowiedzi
-                $('#wrong-marks').append('<span class="wrong-mark">✗</span>');
-                
-
-                // Po 3 błędnych odpowiedziach ukryj przycisk
-                if (wrongAnswersCount >= 3) {
-                    $(this).hide();
-                }
-            });
 
             // Obsługa przycisków dodawania punktów
             $('#team1-add').click(async function() {
@@ -412,6 +400,24 @@
             $(`#answer-${index}`).addClass('visible');
             $(`#button-${index}`).hide();
             document.getElementById('correct-answer-sound').play();
+        }
+        
+        async function handleWrongAnswer() {
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            wrongAnswersCount++;
+            
+            // Odtwórz dźwięk złej odpowiedzi
+            document.getElementById('wrong-answer-sound').play();
+            
+            // Dodaj X do sekcji złych odpowiedzi
+            $('#wrong-marks').append('<span class="wrong-mark">✗</span>');
+            
+            // Po 3 błędnych odpowiedziach wyślij informację do kontrolera
+            if (wrongAnswersCount >= 3) {
+                channel.postMessage({
+                    type: 'disableWrongButton'
+                });
+            }
         }
     </script>
 </body>
