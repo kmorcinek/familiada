@@ -326,6 +326,12 @@
         channel.onmessage = (event) => {
             if (event.data.type === 'showQuestion') {
                 showQuestion();
+            } else if (event.data.type === 'requestAnswers') {
+                // Send answers to controller when requested
+                channel.postMessage({
+                    type: 'loadAnswers',
+                    answers: gameData.answers
+                });
             } else if (event.data.type === 'showAnswer') {
                 showAnswer(event.data.index);
             } else if (event.data.type === 'wrongAnswer') {

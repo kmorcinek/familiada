@@ -52,6 +52,10 @@
             channel.postMessage({
                 type: 'showQuestion'
             });
+            // Request answers from main window
+            channel.postMessage({
+                type: 'requestAnswers'
+            });
         });
         
         // Obsługa przycisku złej odpowiedzi
