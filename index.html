@@ -157,13 +157,9 @@
     </div>
     <div id="game-container">
         <div class="question hidden"></div>
-        <button id="show-question-btn">Pokaż pytanie</button>
         <div id="answers" class="hidden"></div>
         <div class="wrong-answer-section hidden">
             <div id="wrong-marks"></div>
-        </div>
-        <div class="next-question-section" style="text-align: center; margin-top: 20px;">
-            <button id="next-question-btn" class="hidden">Następne pytanie</button>
         </div>
     </div>
 
@@ -290,11 +286,9 @@
             $('.question').addClass('hidden');
             $('#answers').addClass('hidden');
             $('.wrong-answer-section').addClass('hidden');
-            $('#show-question-btn').show();
             $('#team1-add, #team2-add').prop('disabled', false);
-            $('#next-question-btn').addClass('hidden');
             
-            // Reset wrong answer button in controller
+            // Reset controller buttons
             channel.postMessage({
                 type: 'resetWrongButton'
             });
@@ -330,21 +324,18 @@
         
         // Nasłuchuj na wiadomości z kontrolera
         channel.onmessage = (event) => {
-            if (event.data.type === 'showAnswer') {
+            if (event.data.type === 'showQuestion') {
+                showQuestion();
+            } else if (event.data.type === 'showAnswer') {
                 showAnswer(event.data.index);
             } else if (event.data.type === 'wrongAnswer') {
                 handleWrongAnswer();
+            } else if (event.data.type === 'nextQuestion') {
+                nextQuestion();
             }
         };
 
         $(document).ready(function() {
-            // Obsługa przycisku pokazującego pytanie
-            $('#show-question-btn').click(function() {
-                $('.question').removeClass('hidden');
-                $('#answers').removeClass('hidden');
-                $('.wrong-answer-section').removeClass('hidden');
-                $(this).hide();
-            });
 
             // Załaduj pierwsze pytanie
             loadQuestion();
@@ -375,30 +366,45 @@
                 $('#next-question-btn').removeClass('hidden');
             });
 
-            // Obsługa przycisku następnego pytania
-            $('#next-question-btn').click(function() {
-                currentQuestionIndex++;
-                if (currentQuestionIndex < gameQuestions.length) {
-                    resetGameState();
-                    loadQuestion();
-                    // Wyślij nowe odpowiedzi do kontrolera
-                    channel.postMessage({
-                        type: 'loadAnswers',
-                        answers: gameData.answers
-                    });
-                } else {
-                    const winner = team1Points > team2Points ? 'Drużyna 1' : team1Points < team2Points ? 'Drużyna 2' : 'Remis';
-                    const winnerText = winner === 'Remis' ? 'Remis!' : `Zwycięzca: ${winner}!`;
-                    alert(`Koniec gry!\n${winnerText}\nDrużyna 1: ${team1Points} punktów\nDrużyna 2: ${team2Points} punktów`);
-                    $(this).prop('disabled', true);
-                }
-            });
         });
 
+        function showQuestion() {
+            $('.question').removeClass('hidden');
+            $('#answers').removeClass('hidden');
+            $('.wrong-answer-section').removeClass('hidden');
+        }
+        
         function showAnswer(index) {
             $(`#answer-${index}`).addClass('visible');
             $(`#button-${index}`).hide();
             document.getElementById('correct-answer-sound').play();
+            
+            // Enable next question button in controller after showing an answer
+            channel.postMessage({
+                type: 'enableNextButton'
+            });
+        }
+        
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < gameQuestions.length) {
+                resetGameState();
+                loadQuestion();
+                // Wyślij nowe odpowiedzi do kontrolera
+                channel.postMessage({
+                    type: 'loadAnswers',
+                    answers: gameData.answers
+                });
+            } else {
+                const winner = team1Points > team2Points ? 'Drużyna 1' : team1Points < team2Points ? 'Drużyna 2' : 'Remis';
+                const winnerText = winner === 'Remis' ? 'Remis!' : `Zwycięzca: ${winner}!`;
+                alert(`Koniec gry!\n${winnerText}\nDrużyna 1: ${team1Points} punktów\nDrużyna 2: ${team2Points} punktów`);
+                
+                // Disable next question button in controller
+                channel.postMessage({
+                    type: 'disableNextButton'
+                });
+            }
         }
         
         function handleWrongAnswer() {

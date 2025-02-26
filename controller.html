@@ -35,11 +35,24 @@
 </head>
 <body>
     <h2 style="font-size: 45px;">Kontroler odpowiedzi</h2>
-    <button id="wrong-answer-btn" class="answer-button" style="background-color: #e74c3c; margin-bottom: 30px; font-size: 36px;">Zła odpowiedź</button>
+    
+    <div style="display: flex; gap: 15px; margin-bottom: 30px;">
+        <button id="show-question-btn" class="answer-button" style="background-color: #27ae60; font-size: 36px;">Pokaż pytanie</button>
+        <button id="wrong-answer-btn" class="answer-button" style="background-color: #e74c3c; font-size: 36px;">Zła odpowiedź</button>
+        <button id="next-question-btn" class="answer-button" style="background-color: #f39c12; font-size: 36px; display: none;">Następne pytanie</button>
+    </div>
+    
     <div id="answers-container"></div>
 
     <script>
         const channel = new BroadcastChannel('familiada');
+        
+        // Obsługa przycisku pokazującego pytanie
+        document.getElementById('show-question-btn').addEventListener('click', function() {
+            channel.postMessage({
+                type: 'showQuestion'
+            });
+        });
         
         // Obsługa przycisku złej odpowiedzi
         document.getElementById('wrong-answer-btn').addEventListener('click', function() {
@@ -48,12 +61,25 @@
             });
         });
         
+        // Obsługa przycisku następnego pytania
+        document.getElementById('next-question-btn').addEventListener('click', function() {
+            channel.postMessage({
+                type: 'nextQuestion'
+            });
+            this.style.display = 'none';
+        });
+        
         // Nasłuchuj na wiadomości z głównego okna
         channel.onmessage = (event) => {
             if (event.data.type === 'disableWrongButton') {
                 document.getElementById('wrong-answer-btn').disabled = true;
             } else if (event.data.type === 'resetWrongButton') {
                 document.getElementById('wrong-answer-btn').disabled = false;
+            } else if (event.data.type === 'enableNextButton') {
+                document.getElementById('next-question-btn').style.display = 'block';
+            } else if (event.data.type === 'disableNextButton') {
+                document.getElementById('next-question-btn').style.display = 'none';
+                document.getElementById('next-question-btn').disabled = true;
             } else if (event.data.type === 'loadAnswers') {
                 const answers = event.data.answers;
                 const container = document.getElementById('answers-container');
