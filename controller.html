@@ -64,6 +64,9 @@
             
             // Disable the show question button after clicking
             this.disabled = true;
+            
+            // Enable wrong answer button when question is shown
+            document.getElementById('wrong-answer-btn').disabled = false;
         });
         
         // Obsługa przycisku złej odpowiedzi
@@ -73,6 +76,9 @@
                 type: 'wrongAnswer'
             });
         });
+        
+        // Disable wrong answer button initially
+        document.getElementById('wrong-answer-btn').disabled = true;
         
         // Obsługa przycisku następnego pytania
         document.getElementById('next-question-btn').addEventListener('click', function() {
