@@ -357,8 +357,7 @@
 
 
             // Obsługa przycisków dodawania punktów
-            $('#team1-add').click(async function() {
-                await new Promise(resolve => setTimeout(resolve, 5000));
+            $('#team1-add').click(function() {
                 const pointsToAdd = calculateVisiblePoints();
                 team1Points += pointsToAdd;
                 $('#team1-points').val(team1Points);
@@ -367,8 +366,7 @@
                 $('#next-question-btn').removeClass('hidden');
             });
 
-            $('#team2-add').click(async function() {
-                await new Promise(resolve => setTimeout(resolve, 5000));
+            $('#team2-add').click(function() {
                 const pointsToAdd = calculateVisiblePoints();
                 team2Points += pointsToAdd;
                 $('#team2-points').val(team2Points);
@@ -378,8 +376,7 @@
             });
 
             // Obsługa przycisku następnego pytania
-            $('#next-question-btn').click(async function() {
-                await new Promise(resolve => setTimeout(resolve, 5000));
+            $('#next-question-btn').click(function() {
                 currentQuestionIndex++;
                 if (currentQuestionIndex < gameQuestions.length) {
                     resetGameState();
@@ -398,15 +395,13 @@
             });
         });
 
-        async function showAnswer(index) {
-            await new Promise(resolve => setTimeout(resolve, 5000));
+        function showAnswer(index) {
             $(`#answer-${index}`).addClass('visible');
             $(`#button-${index}`).hide();
             document.getElementById('correct-answer-sound').play();
         }
         
-        async function handleWrongAnswer() {
-            await new Promise(resolve => setTimeout(resolve, 5000));
+        function handleWrongAnswer() {
             wrongAnswersCount++;
             
             // Odtwórz dźwięk złej odpowiedzi
