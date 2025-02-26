@@ -6,8 +6,8 @@
     "test": "mocha tests/test_familiada.js"
   },
   "dependencies": {
-    "selenium-webdriver": "^4.18.1",
+    "chai": "^4.3.10",
     "mocha": "^10.3.0",
-    "chai": "^4.3.10"
+    "selenium-webdriver": "^4.29.0"
   }
 }
