@@ -169,103 +169,153 @@
     <script>
         const allGameQuestions = [
             {
-                "question": "Popularny owoc zaczynający się na literę 'J'",
+                "question": "Wymień popularny napój",
                 "answers": [
-                    {"text": "Jabłko", "points": 45},
-                    {"text": "Jagody", "points": 25},
-                    {"text": "Jeżyny", "points": 15},
-                    {"text": "Jarzębina", "points": 10},
-                    {"text": "Jaszczur", "points": 5}
+                    {"text": "Kawa", "points": 40},
+                    {"text": "Herbata", "points": 30},
+                    {"text": "Sok", "points": 15},
+                    {"text": "Cola", "points": 10},
+                    {"text": "Woda", "points": 5}
                 ]
             },
             {
-                "question": "Popularny sport zimowy",
+                "question": "Co ludzie biorą na plażę?",
                 "answers": [
-                    {"text": "Narciarstwo", "points": 35},
-                    {"text": "Hokej", "points": 25},
-                    {"text": "Łyżwiarstwo", "points": 20},
-                    {"text": "Saneczkarstwo", "points": 15},
-                    {"text": "Curling", "points": 5}
+                    {"text": "Ręcznik", "points": 35},
+                    {"text": "Krem do opalania", "points": 25},
+                    {"text": "Parasol", "points": 20},
+                    {"text": "Okulary przeciwsłoneczne", "points": 15},
+                    {"text": "Piłkę", "points": 5}
                 ]
             },
             {
-                "question": "Co najczęściej znajduje się w lodówce?",
+                "question": "Popularne miejsce na wakacje",
                 "answers": [
-                    {"text": "Mleko", "points": 40},
-                    {"text": "Ser", "points": 30},
-                    {"text": "Masło", "points": 15},
-                    {"text": "Jajka", "points": 10},
-                    {"text": "Wędlina", "points": 5}
+                    {"text": "Morze", "points": 40},
+                    {"text": "Góry", "points": 30},
+                    {"text": "Jezioro", "points": 15},
+                    {"text": "Zagranica", "points": 10},
+                    {"text": "Działka", "points": 5}
                 ]
             },
             {
-                "question": "Popularne zwierzę domowe",
+                "question": "Co ludzie jedzą na śniadanie?",
                 "answers": [
-                    {"text": "Pies", "points": 40},
-                    {"text": "Kot", "points": 35},
-                    {"text": "Chomik", "points": 15},
-                    {"text": "Papuga", "points": 5},
-                    {"text": "Rybki", "points": 5}
+                    {"text": "Kanapki", "points": 35},
+                    {"text": "Jajecznica", "points": 30},
+                    {"text": "Płatki", "points": 20},
+                    {"text": "Jogurt", "points": 10},
+                    {"text": "Owsianka", "points": 5}
                 ]
             },
             {
-                "question": "Co ludzie robią w weekend?",
+                "question": "Popularne urządzenie elektroniczne",
                 "answers": [
-                    {"text": "Odpoczywają", "points": 35},
-                    {"text": "Sprzątają", "points": 25},
+                    {"text": "Telefon", "points": 40},
+                    {"text": "Telewizor", "points": 25},
+                    {"text": "Laptop", "points": 20},
+                    {"text": "Tablet", "points": 10},
+                    {"text": "Smartwatch", "points": 5}
+                ]
+            },
+            {
+                "question": "Co można znaleźć w samochodzie?",
+                "answers": [
+                    {"text": "Kierownica", "points": 35},
+                    {"text": "Radio", "points": 25},
+                    {"text": "Fotele", "points": 20},
+                    {"text": "Pasy bezpieczeństwa", "points": 15},
+                    {"text": "Apteczka", "points": 5}
+                ]
+            },
+            {
+                "question": "Popularne danie obiadowe",
+                "answers": [
+                    {"text": "Schabowy", "points": 35},
+                    {"text": "Rosół", "points": 30},
+                    {"text": "Pierogi", "points": 20},
+                    {"text": "Spaghetti", "points": 10},
+                    {"text": "Gołąbki", "points": 5}
+                ]
+            },
+            {
+                "question": "Co ludzie robią przed snem?",
+                "answers": [
+                    {"text": "Myją zęby", "points": 35},
+                    {"text": "Czytają książkę", "points": 25},
                     {"text": "Oglądają TV", "points": 20},
-                    {"text": "Spotykają się", "points": 15},
-                    {"text": "Śpią", "points": 5}
+                    {"text": "Przeglądają telefon", "points": 15},
+                    {"text": "Biorą prysznic", "points": 5}
                 ]
             },
             {
-                "question": "Popularne warzywo",
+                "question": "Popularne zwierzę w ZOO",
                 "answers": [
-                    {"text": "Marchewka", "points": 35},
-                    {"text": "Ziemniak", "points": 30},
-                    {"text": "Pomidor", "points": 20},
-                    {"text": "Ogórek", "points": 10},
-                    {"text": "Cebula", "points": 5}
+                    {"text": "Lew", "points": 35},
+                    {"text": "Słoń", "points": 30},
+                    {"text": "Żyrafa", "points": 20},
+                    {"text": "Małpa", "points": 10},
+                    {"text": "Pingwin", "points": 5}
                 ]
             },
             {
-                "question": "Co można znaleźć w parku?",
+                "question": "Co ludzie boją się najbardziej?",
                 "answers": [
-                    {"text": "Ławka", "points": 35},
-                    {"text": "Drzewa", "points": 30},
-                    {"text": "Plac zabaw", "points": 20},
-                    {"text": "Kwiaty", "points": 10},
-                    {"text": "Ptaki", "points": 5}
+                    {"text": "Pająki", "points": 35},
+                    {"text": "Wysokość", "points": 30},
+                    {"text": "Śmierć", "points": 20},
+                    {"text": "Ciemność", "points": 10},
+                    {"text": "Samotność", "points": 5}
                 ]
             },
             {
-                "question": "Popularne zawody",
+                "question": "Popularne święto",
                 "answers": [
-                    {"text": "Nauczyciel", "points": 35},
-                    {"text": "Lekarz", "points": 30},
-                    {"text": "Kierowca", "points": 20},
-                    {"text": "Kucharz", "points": 10},
-                    {"text": "Prawnik", "points": 5}
+                    {"text": "Boże Narodzenie", "points": 40},
+                    {"text": "Wielkanoc", "points": 30},
+                    {"text": "Sylwester", "points": 15},
+                    {"text": "Walentynki", "points": 10},
+                    {"text": "Dzień Matki", "points": 5}
                 ]
             },
             {
-                "question": "Co można kupić w piekarni?",
+                "question": "Co ludzie kupują w aptece?",
                 "answers": [
-                    {"text": "Chleb", "points": 40},
-                    {"text": "Bułki", "points": 30},
-                    {"text": "Pączki", "points": 15},
-                    {"text": "Rogale", "points": 10},
-                    {"text": "Drożdżówki", "points": 5}
+                    {"text": "Leki", "points": 45},
+                    {"text": "Witaminy", "points": 25},
+                    {"text": "Plastry", "points": 15},
+                    {"text": "Kosmetyki", "points": 10},
+                    {"text": "Termometr", "points": 5}
                 ]
             },
             {
-                "question": "Popularne kolory",
+                "question": "Popularne hobby",
                 "answers": [
-                    {"text": "Czerwony", "points": 35},
-                    {"text": "Niebieski", "points": 30},
-                    {"text": "Zielony", "points": 20},
-                    {"text": "Żółty", "points": 10},
-                    {"text": "Czarny", "points": 5}
+                    {"text": "Czytanie", "points": 35},
+                    {"text": "Sport", "points": 30},
+                    {"text": "Gotowanie", "points": 20},
+                    {"text": "Ogrodnictwo", "points": 10},
+                    {"text": "Fotografia", "points": 5}
+                ]
+            },
+            {
+                "question": "Co ludzie noszą zimą?",
+                "answers": [
+                    {"text": "Czapkę", "points": 40},
+                    {"text": "Szalik", "points": 30},
+                    {"text": "Rękawiczki", "points": 15},
+                    {"text": "Kurtkę", "points": 10},
+                    {"text": "Buty zimowe", "points": 5}
+                ]
+            },
+            {
+                "question": "Popularne owoce",
+                "answers": [
+                    {"text": "Jabłko", "points": 35},
+                    {"text": "Banan", "points": 30},
+                    {"text": "Truskawka", "points": 20},
+                    {"text": "Pomarańcza", "points": 10},
+                    {"text": "Winogrona", "points": 5}
                 ]
             }
         ];
