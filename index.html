@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Familiada</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <audio id="wrong-answer-sound" src="https://www.myinstants.com/media/sounds/wrong-answer-sound-effect.mp3"></audio>
     <audio id="correct-answer-sound" src="https://www.myinstants.com/media/sounds/correct-answer.mp3"></audio>
     <audio id="button-click-sound" src="https://www.myinstants.com/media/sounds/button-click.mp3"></audio>
@@ -339,8 +341,10 @@
             $('.wrong-answer-section').addClass('hidden');
             
             // Reset controller buttons
-            channel.postMessage({
-                type: 'resetWrongButton'
+            gameRef.child('status').update({
+                wrongButtonDisabled: true,
+                showMeQuestionButtonDisabled: false,
+                showParticipantsButtonDisabled: true
             });
         }
 
@@ -369,43 +373,84 @@
             return points;
         }
 
-        // Inicjalizacja kanału komunikacji
-        const channel = new BroadcastChannel('familiada');
+        // Inicjalizacja Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxfX9eNRr7FAVdZbFAUYX5OZWIBi6JnSQ",
+            authDomain: "familiada-game.firebaseapp.com",
+            databaseURL: "https://familiada-game-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "familiada-game",
+            storageBucket: "familiada-game.appspot.com",
+            messagingSenderId: "1045327005632",
+            appId: "1:1045327005632:web:a9c3f9e3e9c5a7e1a9b9c9"
+        };
         
-        // Nasłuchuj na wiadomości z kontrolera
-        channel.onmessage = (event) => {
-            if (event.data.type === 'showQuestion') {
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        // Generate a unique session ID or use a fixed one for simplicity
+        const sessionId = 'familiada-session';
+        const gameRef = database.ref(`games/${sessionId}`);
+        
+        // Listen for commands from controller
+        gameRef.child('commands').on('child_added', (snapshot) => {
+            const command = snapshot.val();
+            
+            if (command.type === 'showQuestion') {
                 showQuestion();
-            } else if (event.data.type === 'requestAnswers') {
+            } else if (command.type === 'requestAnswers') {
                 // Send answers to controller when requested
-                channel.postMessage({
-                    type: 'loadAnswers',
+                gameRef.child('gameData').set({
                     answers: gameData.answers,
                     question: gameData.question
                 });
-            } else if (event.data.type === 'showAnswer') {
-                showAnswer(event.data.index);
-            } else if (event.data.type === 'wrongAnswer') {
+            } else if (command.type === 'showAnswer') {
+                showAnswer(command.index);
+            } else if (command.type === 'wrongAnswer') {
                 handleWrongAnswer();
-            } else if (event.data.type === 'nextQuestion') {
+            } else if (command.type === 'nextQuestion') {
                 nextQuestion();
+            } else if (command.type === 'addPointsTeam1') {
+                document.getElementById('add-points-sound').play();
+                const pointsToAdd = calculateVisiblePoints();
+                team1Points += pointsToAdd;
+                $('#team1-points').val(team1Points);
+                // Update status for controller
+                gameRef.child('status').update({
+                    addPointsButtonsDisabled: true
+                });
+            } else if (command.type === 'addPointsTeam2') {
+                document.getElementById('add-points-sound').play();
+                const pointsToAdd = calculateVisiblePoints();
+                team2Points += pointsToAdd;
+                $('#team2-points').val(team2Points);
+                // Update status for controller
+                gameRef.child('status').update({
+                    addPointsButtonsDisabled: true
+                });
             }
-        };
+            
+            // Remove processed command
+            snapshot.ref.remove();
+        });
 
         $(document).ready(function() {
-
             // Załaduj pierwsze pytanie
             loadQuestion();
             
-            // Wyślij odpowiedzi do kontrolera
-            channel.postMessage({
-                type: 'loadAnswers',
-                answers: gameData.answers
+            // Reset game state in Firebase
+            gameRef.set({
+                status: {
+                    wrongButtonDisabled: true,
+                    nextButtonVisible: false,
+                    addPointsButtonsDisabled: false
+                },
+                gameData: {
+                    answers: gameData.answers,
+                    question: gameData.question
+                },
+                commands: {}
             });
-
-
-            // Obsługa przycisków dodawania punktów
-
         });
 
         function showQuestion() {
@@ -420,8 +465,8 @@
             document.getElementById('correct-answer-sound').play();
             
             // Enable next question button in controller after showing an answer
-            channel.postMessage({
-                type: 'enableNextButton'
+            gameRef.child('status').update({
+                nextButtonVisible: true
             });
         }
         
@@ -432,10 +477,16 @@
                 resetGameState();
                 loadQuestion();
                 // Wyślij nowe odpowiedzi do kontrolera
-                channel.postMessage({
-                    type: 'loadAnswers',
+                gameRef.child('gameData').set({
                     answers: gameData.answers,
                     question: gameData.question
+                });
+                
+                // Update controller status
+                gameRef.child('status').update({
+                    wrongButtonDisabled: true,
+                    nextButtonVisible: false,
+                    addPointsButtonsDisabled: false
                 });
             } else {
                 const winner = team1Points > team2Points ? 'Drużyna 1' : team1Points < team2Points ? 'Drużyna 2' : 'Remis';
@@ -443,8 +494,9 @@
                 alert(`Koniec gry!\n${winnerText}\nDrużyna 1: ${team1Points} punktów\nDrużyna 2: ${team2Points} punktów`);
                 
                 // Disable next question button in controller
-                channel.postMessage({
-                    type: 'disableNextButton'
+                gameRef.child('status').update({
+                    nextButtonVisible: false,
+                    gameOver: true
                 });
             }
         }
@@ -460,49 +512,11 @@
             
             // Po 3 błędnych odpowiedziach wyślij informację do kontrolera
             if (wrongAnswersCount >= 3) {
-                channel.postMessage({
-                    type: 'disableWrongButton'
+                gameRef.child('status').update({
+                    wrongButtonDisabled: true
                 });
             }
         }
-        
-        // Nasłuchuj na wiadomości z kontrolera dotyczące punktów
-        channel.onmessage = (event) => {
-            if (event.data.type === 'showQuestion') {
-                showQuestion();
-            } else if (event.data.type === 'requestAnswers') {
-                // Send answers to controller when requested
-                channel.postMessage({
-                    type: 'loadAnswers',
-                    answers: gameData.answers,
-                    question: gameData.question
-                });
-            } else if (event.data.type === 'showAnswer') {
-                showAnswer(event.data.index);
-            } else if (event.data.type === 'wrongAnswer') {
-                handleWrongAnswer();
-            } else if (event.data.type === 'nextQuestion') {
-                nextQuestion();
-            } else if (event.data.type === 'addPointsTeam1') {
-                document.getElementById('add-points-sound').play();
-                const pointsToAdd = calculateVisiblePoints();
-                team1Points += pointsToAdd;
-                $('#team1-points').val(team1Points);
-                // Notify controller to disable both buttons
-                channel.postMessage({
-                    type: 'disableAddPointsButtons'
-                });
-            } else if (event.data.type === 'addPointsTeam2') {
-                document.getElementById('add-points-sound').play();
-                const pointsToAdd = calculateVisiblePoints();
-                team2Points += pointsToAdd;
-                $('#team2-points').val(team2Points);
-                // Notify controller to disable both buttons
-                channel.postMessage({
-                    type: 'disableAddPointsButtons'
-                });
-            }
-        };
     </script>
 </body>
 </html>

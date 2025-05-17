@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Kontroler Familiady</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <audio id="button-click-sound" src="https://www.myinstants.com/media/sounds/button-click.mp3"></audio>
     <audio id="show-question-sound" src="https://www.myinstants.com/media/sounds/game-start.mp3"></audio>
     <audio id="wrong-answer-sound" src="https://www.myinstants.com/media/sounds/wrong-answer-sound-effect.mp3"></audio>
@@ -62,14 +64,31 @@
     </div>
 
     <script>
-        const channel = new BroadcastChannel('familiada');
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxfX9eNRr7FAVdZbFAUYX5OZWIBi6JnSQ",
+            authDomain: "familiada-game.firebaseapp.com",
+            databaseURL: "https://familiada-game-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "familiada-game",
+            storageBucket: "familiada-game.appspot.com",
+            messagingSenderId: "1045327005632",
+            appId: "1:1045327005632:web:a9c3f9e3e9c5a7e1a9b9c9"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        // Use the same session ID as in index.html
+        const sessionId = 'familiada-session';
+        const gameRef = database.ref(`games/${sessionId}`);
         
         // Obsługa przycisku pokazującego pytanie tylko dla prowadzącego
         document.getElementById('show-me-question-btn').addEventListener('click', function() {
             document.getElementById('button-click-sound').play();
             
             // Request answers from main window
-            channel.postMessage({
+            gameRef.child('commands').push({
                 type: 'requestAnswers'
             });
             
@@ -81,7 +100,7 @@
         // Obsługa przycisku pokazującego pytanie uczestnikom
         document.getElementById('show-participants-question-btn').addEventListener('click', function() {
             document.getElementById('show-question-sound').play();
-            channel.postMessage({
+            gameRef.child('commands').push({
                 type: 'showQuestion'
             });
             
@@ -101,7 +120,7 @@
         // Obsługa przycisku złej odpowiedzi
         document.getElementById('wrong-answer-btn').addEventListener('click', function() {
             document.getElementById('wrong-answer-sound').play();
-            channel.postMessage({
+            gameRef.child('commands').push({
                 type: 'wrongAnswer'
             });
         });
@@ -113,7 +132,7 @@
         // Obsługa przycisku następnego pytania
         document.getElementById('next-question-btn').addEventListener('click', function() {
             document.getElementById('next-question-sound').play();
-            channel.postMessage({
+            gameRef.child('commands').push({
                 type: 'nextQuestion'
             });
             this.style.display = 'none';
@@ -122,7 +141,7 @@
         // Obsługa przycisków dodawania punktów
         document.getElementById('team1-add').addEventListener('click', function() {
             document.getElementById('button-click-sound').play();
-            channel.postMessage({
+            gameRef.child('commands').push({
                 type: 'addPointsTeam1'
             });
             document.getElementById('team1-add').disabled = true;
@@ -132,7 +151,7 @@
         
         document.getElementById('team2-add').addEventListener('click', function() {
             document.getElementById('button-click-sound').play();
-            channel.postMessage({
+            gameRef.child('commands').push({
                 type: 'addPointsTeam2'
             });
             document.getElementById('team1-add').disabled = true;
@@ -140,65 +159,82 @@
             document.getElementById('next-question-btn').style.display = 'block';
         });
         
-        // Nasłuchuj na wiadomości z głównego okna
-        channel.onmessage = (event) => {
-            if (event.data.type === 'disableWrongButton') {
-                document.getElementById('wrong-answer-btn').disabled = true;
-            } else if (event.data.type === 'resetWrongButton') {
-                document.getElementById('wrong-answer-btn').disabled = true; // Keep disabled until question is shown
-                document.getElementById('show-me-question-btn').disabled = false;
-                document.getElementById('show-participants-question-btn').disabled = true;
-                document.getElementById('team1-add').disabled = false;
-                document.getElementById('team2-add').disabled = false;
-            } else if (event.data.type === 'enableNextButton') {
-                document.getElementById('next-question-btn').style.display = 'block';
-            } else if (event.data.type === 'disableNextButton') {
+        // Listen for game status updates
+        gameRef.child('status').on('value', (snapshot) => {
+            const status = snapshot.val();
+            if (!status) return;
+            
+            if (status.wrongButtonDisabled !== undefined) {
+                document.getElementById('wrong-answer-btn').disabled = status.wrongButtonDisabled;
+            }
+            
+            if (status.showMeQuestionButtonDisabled !== undefined) {
+                document.getElementById('show-me-question-btn').disabled = status.showMeQuestionButtonDisabled;
+            }
+            
+            if (status.showParticipantsButtonDisabled !== undefined) {
+                document.getElementById('show-participants-question-btn').disabled = status.showParticipantsButtonDisabled;
+            }
+            
+            if (status.nextButtonVisible !== undefined) {
+                document.getElementById('next-question-btn').style.display = status.nextButtonVisible ? 'block' : 'none';
+            }
+            
+            if (status.addPointsButtonsDisabled !== undefined) {
+                document.getElementById('team1-add').disabled = status.addPointsButtonsDisabled;
+                document.getElementById('team2-add').disabled = status.addPointsButtonsDisabled;
+            }
+            
+            if (status.gameOver) {
                 document.getElementById('next-question-btn').style.display = 'none';
                 document.getElementById('next-question-btn').disabled = true;
-            } else if (event.data.type === 'disableAddPointsButtons') {
-                document.getElementById('team1-add').disabled = true;
-                document.getElementById('team2-add').disabled = true;
-            } else if (event.data.type === 'loadAnswers') {
-                const answers = event.data.answers;
-                const container = document.getElementById('answers-container');
-                container.innerHTML = '';
-                
-                // Display the question text
-                if (event.data.question) {
-                    document.querySelector('.question').textContent = event.data.question;
-                    document.querySelector('.question').style.display = 'block';
-                }
-                
-                answers.forEach((answer, index) => {
-                    const button = document.createElement('button');
-                    button.className = 'answer-button';
-                    button.textContent = `Pokaż odpowiedź ${index + 1}: ${answer.text}`;
-                    // Always disable answer buttons initially, they will be enabled only after showing to participants
-                    button.disabled = true;
-                    // Prevent default behavior when text is selected
-                    button.addEventListener('mouseup', function(e) {
-                        const selection = window.getSelection().toString();
-                        if (selection.length > 0) {
-                            e.stopPropagation();
-                            return;
-                        }
-                    });
-                    button.onclick = (e) => {
-                        // Only trigger if no text is selected
-                        if (window.getSelection().toString().length > 0) {
-                            return;
-                        }
-                        document.getElementById('button-click-sound').play();
-                        channel.postMessage({
-                            type: 'showAnswer',
-                            index: index
-                        });
-                        button.disabled = true;
-                    };
-                    container.appendChild(button);
-                });
             }
-        };
+        });
+        
+        // Listen for game data updates
+        gameRef.child('gameData').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (!data || !data.answers) return;
+            
+            const answers = data.answers;
+            const container = document.getElementById('answers-container');
+            container.innerHTML = '';
+            
+            // Display the question text
+            if (data.question) {
+                document.querySelector('.question').textContent = data.question;
+                document.querySelector('.question').style.display = 'block';
+            }
+            
+            answers.forEach((answer, index) => {
+                const button = document.createElement('button');
+                button.className = 'answer-button';
+                button.textContent = `Pokaż odpowiedź ${index + 1}: ${answer.text}`;
+                // Always disable answer buttons initially, they will be enabled only after showing to participants
+                button.disabled = true;
+                // Prevent default behavior when text is selected
+                button.addEventListener('mouseup', function(e) {
+                    const selection = window.getSelection().toString();
+                    if (selection.length > 0) {
+                        e.stopPropagation();
+                        return;
+                    }
+                });
+                button.onclick = (e) => {
+                    // Only trigger if no text is selected
+                    if (window.getSelection().toString().length > 0) {
+                        return;
+                    }
+                    document.getElementById('button-click-sound').play();
+                    gameRef.child('commands').push({
+                        type: 'showAnswer',
+                        index: index
+                    });
+                    button.disabled = true;
+                };
+                container.appendChild(button);
+            });
+        });
     </script>
 </body>
 </html>
