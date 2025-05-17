@@ -141,6 +141,9 @@
         gameRef.child("commands").push({
           type: "requestAnswers",
         });
+        
+        // Ensure the show participants button is enabled
+        document.getElementById("show-participants-question-btn").disabled = false;
       });
 
       // Obsługa przycisku pokazującego pytanie uczestnikom
@@ -177,8 +180,9 @@
           });
         });
 
-      // Make sure wrong answer button is disabled initially
+      // Make sure wrong answer button is disabled initially, but show participants button is enabled
       document.getElementById("wrong-answer-btn").disabled = true;
+      document.getElementById("show-participants-question-btn").disabled = false;
 
       // Obsługa przycisku następnego pytania
       document
