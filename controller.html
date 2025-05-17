@@ -75,9 +75,6 @@
             // Disable this button and enable the show to participants button
             this.disabled = true;
             document.getElementById('show-participants-question-btn').disabled = false;
-            
-            // Show question on controller
-            document.querySelector('.question').style.display = 'block';
         });
         
         // Obsługa przycisku pokazującego pytanie uczestnikom
@@ -162,6 +159,7 @@
                 // Display the question text
                 if (event.data.question) {
                     document.querySelector('.question').textContent = event.data.question;
+                    document.querySelector('.question').style.display = 'block';
                 }
                 
                 answers.forEach((answer, index) => {

@@ -474,7 +474,8 @@
                 // Send answers to controller when requested
                 channel.postMessage({
                     type: 'loadAnswers',
-                    answers: gameData.answers
+                    answers: gameData.answers,
+                    question: gameData.question
                 });
             } else if (event.data.type === 'showAnswer') {
                 showAnswer(event.data.index);
