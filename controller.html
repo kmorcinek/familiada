@@ -174,8 +174,7 @@
                     button.className = 'answer-button';
                     button.textContent = `Pokaż odpowiedź ${index + 1}: ${answer.text}`;
                     // Enable answer buttons only after showing question to participants
-                    button.disabled = document.getElementById('show-participants-question-btn').disabled || 
-                                     !document.getElementById('show-me-question-btn').disabled;
+                    button.disabled = document.getElementById('show-participants-question-btn').disabled;
                     // Prevent default behavior when text is selected
                     button.addEventListener('mouseup', function(e) {
                         const selection = window.getSelection().toString();
