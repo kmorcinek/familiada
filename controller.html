@@ -193,6 +193,9 @@
             type: "nextQuestion",
           });
           this.style.display = "none";
+          
+          // Make sure the show participants button is enabled for the next question
+          document.getElementById("show-participants-question-btn").disabled = false;
         });
 
       // Obsługa przycisków dodawania punktów
