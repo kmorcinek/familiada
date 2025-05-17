@@ -41,7 +41,8 @@
     <h2 style="font-size: 45px;">Kontroler odpowiedzi</h2>
     
     <div style="display: flex; gap: 15px; margin-bottom: 30px;">
-        <button id="show-question-btn" class="answer-button" style="background-color: #27ae60; font-size: 36px;">Pokaż pytanie</button>
+        <button id="show-me-question-btn" class="answer-button" style="background-color: #27ae60; font-size: 36px;">Pokaż mi pytanie</button>
+        <button id="show-participants-question-btn" class="answer-button" style="background-color: #27ae60; font-size: 36px;" disabled>Pokaż uczestnikom pytanie</button>
         <button id="wrong-answer-btn" class="answer-button" style="background-color: #e74c3c; font-size: 36px;">Zła odpowiedź</button>
         <button id="next-question-btn" class="answer-button" style="background-color: #f39c12; font-size: 36px; display: none;">Następne pytanie</button>
     </div>
@@ -60,21 +61,31 @@
     <script>
         const channel = new BroadcastChannel('familiada');
         
-        // Obsługa przycisku pokazującego pytanie
-        document.getElementById('show-question-btn').addEventListener('click', function() {
-            document.getElementById('show-question-sound').play();
-            channel.postMessage({
-                type: 'showQuestion'
-            });
+        // Obsługa przycisku pokazującego pytanie tylko dla prowadzącego
+        document.getElementById('show-me-question-btn').addEventListener('click', function() {
+            document.getElementById('button-click-sound').play();
+            
             // Request answers from main window
             channel.postMessage({
                 type: 'requestAnswers'
             });
             
-            // Disable the show question button after clicking
+            // Disable this button and enable the show to participants button
+            this.disabled = true;
+            document.getElementById('show-participants-question-btn').disabled = false;
+        });
+        
+        // Obsługa przycisku pokazującego pytanie uczestnikom
+        document.getElementById('show-participants-question-btn').addEventListener('click', function() {
+            document.getElementById('show-question-sound').play();
+            channel.postMessage({
+                type: 'showQuestion'
+            });
+            
+            // Disable this button after clicking
             this.disabled = true;
             
-            // Enable wrong answer button when question is shown
+            // Enable wrong answer button when question is shown to participants
             document.getElementById('wrong-answer-btn').disabled = false;
         });
         
@@ -88,6 +99,7 @@
         
         // Make sure wrong answer button is disabled initially
         document.getElementById('wrong-answer-btn').disabled = true;
+        document.getElementById('show-participants-question-btn').disabled = true;
         
         // Obsługa przycisku następnego pytania
         document.getElementById('next-question-btn').addEventListener('click', function() {
@@ -125,7 +137,8 @@
                 document.getElementById('wrong-answer-btn').disabled = true;
             } else if (event.data.type === 'resetWrongButton') {
                 document.getElementById('wrong-answer-btn').disabled = true; // Keep disabled until question is shown
-                document.getElementById('show-question-btn').disabled = false;
+                document.getElementById('show-me-question-btn').disabled = false;
+                document.getElementById('show-participants-question-btn').disabled = true;
                 document.getElementById('team1-add').disabled = false;
                 document.getElementById('team2-add').disabled = false;
             } else if (event.data.type === 'enableNextButton') {
@@ -145,8 +158,8 @@
                     const button = document.createElement('button');
                     button.className = 'answer-button';
                     button.textContent = `Pokaż odpowiedź ${index + 1}: ${answer.text}`;
-                    // Enable answer buttons only if show question button is disabled (question is shown)
-                    button.disabled = !document.getElementById('show-question-btn').disabled;
+                    // Enable answer buttons only if show participants question button is disabled (question is shown)
+                    button.disabled = !document.getElementById('show-participants-question-btn').disabled;
                     button.onclick = () => {
                         document.getElementById('button-click-sound').play();
                         channel.postMessage({
