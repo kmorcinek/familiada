@@ -1,522 +1,560 @@
 <!DOCTYPE html>
 <html lang="pl">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Familiada</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <audio id="wrong-answer-sound" src="https://www.myinstants.com/media/sounds/wrong-answer-sound-effect.mp3"></audio>
-    <audio id="correct-answer-sound" src="https://www.myinstants.com/media/sounds/correct-answer.mp3"></audio>
-    <audio id="button-click-sound" src="https://www.myinstants.com/media/sounds/button-click.mp3"></audio>
-    <audio id="next-question-sound" src="https://www.myinstants.com/media/sounds/game-level-complete.mp3"></audio>
-    <audio id="add-points-sound" src="https://www.myinstants.com/media/sounds/cash-register-sound-effect.mp3"></audio>
+    <audio
+      id="wrong-answer-sound"
+      src="https://www.myinstants.com/media/sounds/wrong-answer-sound-effect.mp3"
+    ></audio>
+    <audio
+      id="correct-answer-sound"
+      src="https://www.myinstants.com/media/sounds/correct-answer.mp3"
+    ></audio>
+    <audio
+      id="button-click-sound"
+      src="https://www.myinstants.com/media/sounds/button-click.mp3"
+    ></audio>
+    <audio
+      id="next-question-sound"
+      src="https://www.myinstants.com/media/sounds/game-level-complete.mp3"
+    ></audio>
+    <audio
+      id="add-points-sound"
+      src="https://www.myinstants.com/media/sounds/cash-register-sound-effect.mp3"
+    ></audio>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px;
-            background-color: #f0f0f0;
-            font-size: 27px; /* Base font size 1.5x */
-        }
-        .question {
-            font-size: 48px; /* Question text 1.5x */
-            margin: 30px 0;
-            text-align: center;
-            color: #e74c3c;
-            font-weight: bold;
-        }
-        .answer-container {
-            background: white;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .answer {
-            font-size: 42px; /* Answer text 1.5x */
-            color: #2980b9;
-            visibility: hidden;
-            display: flex;
-            align-items: center;
-        }
-        .answer.visible {
-            color: #27ae60;
-        }
-        .wrong-mark {
-            color: red;
-            font-size: 54px; /* X marks 1.5x */
-            margin-left: 23px;
-            display: inline-block;
-        }
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-            font-size: 63px; /* Heading 1.5x */
-            margin-bottom: 45px;
-        }
-        .teams-layout {
-            display: flex;
-            justify-content: space-between;
-            gap: 30px;
-            margin-bottom: 45px;
-        }
-        .team-section {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            flex: 1;
-            justify-content: center;
-        }
-        .team-input {
-            padding: 15px;
-            font-size: 36px; /* Team name input 1.5x */
-            width: 60%;
-            box-sizing: border-box;
-        }
-        .team-points {
-            padding: 15px;
-            font-size: 36px; /* Team points 1.5x */
-            width: 22.5%;
-            box-sizing: border-box;
-            background-color: #e8e8e8;
-            border: 2px solid #ccc;
-            text-align: center;
-            font-weight: bold;
-        }
-        .add-points-btn {
-            padding: 12px 23px;
-            font-size: 36px; /* Button text 1.5x */
-            background-color: #27ae60;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        .add-points-btn:hover {
-            background-color: #219a52;
-        }
-        .add-points-btn:disabled {
-            background-color: #95a5a6;
-            cursor: not-allowed;
-        }
-        .wrong-answer-section {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 30px;
-        }
-        #wrong-marks {
-            display: flex;
-            align-items: center;
-        }
-        .points {
-            font-weight: bold;
-            color: #27ae60;
-            font-size: 39px; /* Points text 1.5x */
-        }
-        button {
-            padding: 15px 30px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 33px; /* Button text 1.5x */
-            margin: 8px;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-        .hidden {
-            display: none;
-        }
-        .visible {
-            visibility: visible;
-        }
-        #title-container {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        #show-title-btn {
-            margin: 15px;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 30px;
+        background-color: #f0f0f0;
+        font-size: 27px; /* Base font size 1.5x */
+      }
+      .question {
+        font-size: 48px; /* Question text 1.5x */
+        margin: 30px 0;
+        text-align: center;
+        color: #e74c3c;
+        font-weight: bold;
+      }
+      .answer-container {
+        background: white;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .answer {
+        font-size: 42px; /* Answer text 1.5x */
+        color: #2980b9;
+        visibility: hidden;
+        display: flex;
+        align-items: center;
+      }
+      .answer.visible {
+        color: #27ae60;
+      }
+      .wrong-mark {
+        color: red;
+        font-size: 54px; /* X marks 1.5x */
+        margin-left: 23px;
+        display: inline-block;
+      }
+      h1 {
+        text-align: center;
+        color: #2c3e50;
+        font-size: 63px; /* Heading 1.5x */
+        margin-bottom: 45px;
+      }
+      .teams-layout {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        margin-bottom: 45px;
+      }
+      .team-section {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        flex: 1;
+        justify-content: center;
+      }
+      .team-input {
+        padding: 15px;
+        font-size: 36px; /* Team name input 1.5x */
+        width: 60%;
+        box-sizing: border-box;
+      }
+      .team-points {
+        padding: 15px;
+        font-size: 36px; /* Team points 1.5x */
+        width: 22.5%;
+        box-sizing: border-box;
+        background-color: #e8e8e8;
+        border: 2px solid #ccc;
+        text-align: center;
+        font-weight: bold;
+      }
+      .add-points-btn {
+        padding: 12px 23px;
+        font-size: 36px; /* Button text 1.5x */
+        background-color: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .add-points-btn:hover {
+        background-color: #219a52;
+      }
+      .add-points-btn:disabled {
+        background-color: #95a5a6;
+        cursor: not-allowed;
+      }
+      .wrong-answer-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 30px;
+      }
+      #wrong-marks {
+        display: flex;
+        align-items: center;
+      }
+      .points {
+        font-weight: bold;
+        color: #27ae60;
+        font-size: 39px; /* Points text 1.5x */
+      }
+      button {
+        padding: 15px 30px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 33px; /* Button text 1.5x */
+        margin: 8px;
+      }
+      button:hover {
+        background-color: #2980b9;
+      }
+      .hidden {
+        display: none;
+      }
+      .visible {
+        visibility: visible;
+      }
+      #title-container {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      #show-title-btn {
+        margin: 15px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Familiada</h1>
     <div class="teams-layout">
-        <div class="team1 team-section">
-            <input type="text" class="team-input" value="Drużyna 1">
-            <input type="text" class="team-points" id="team1-points" value="0" readonly>
-        </div>
-        <div class="team2 team-section">
-            <input type="text" class="team-input" value="Drużyna 2">
-            <input type="text" class="team-points" id="team2-points" value="0" readonly>
-        </div>
+      <div class="team1 team-section">
+        <input type="text" class="team-input" value="Drużyna 1" />
+        <input
+          type="text"
+          class="team-points"
+          id="team1-points"
+          value="0"
+          readonly
+        />
+      </div>
+      <div class="team2 team-section">
+        <input type="text" class="team-input" value="Drużyna 2" />
+        <input
+          type="text"
+          class="team-points"
+          id="team2-points"
+          value="0"
+          readonly
+        />
+      </div>
     </div>
     <div id="game-container">
-        <div class="question hidden"></div>
-        <div id="answers" class="hidden"></div>
-        <div class="wrong-answer-section hidden">
-            <div id="wrong-marks"></div>
-        </div>
+      <div class="question hidden"></div>
+      <div id="answers" class="hidden"></div>
+      <div class="wrong-answer-section hidden">
+        <div id="wrong-marks"></div>
+      </div>
     </div>
 
     <script>
-        const allGameQuestions = [
-            {
-                "question": "Wymień popularny napój",
-                "answers": [
-                    {"text": "Kawa", "points": 39},
-                    {"text": "Herbata", "points": 25},
-                    {"text": "Sok", "points": 16},
-                    {"text": "Cola", "points": 8},
-                    {"text": "Woda", "points": 4}
-                ]
-            },
-            {
-                "question": "Co ludzie biorą na plażę?",
-                "answers": [
-                    {"text": "Ręcznik", "points": 36},
-                    {"text": "Krem do opalania", "points": 22},
-                    {"text": "Parasol", "points": 18},
-                    {"text": "Okulary przeciwsłoneczne", "points": 11},
-                    {"text": "Piłkę", "points": 7}
-                ]
-            },
-            {
-                "question": "Popularne miejsce na wakacje",
-                "answers": [
-                    {"text": "Morze", "points": 35},
-                    {"text": "Góry", "points": 29},
-                    {"text": "Jezioro", "points": 16},
-                    {"text": "Zagranica", "points": 10},
-                    {"text": "Działka", "points": 4}
-                ]
-            },
-            {
-                "question": "Co ludzie jedzą na śniadanie?",
-                "answers": [
-                    {"text": "Kanapki", "points": 31},
-                    {"text": "Jajecznica", "points": 27},
-                    {"text": "Płatki", "points": 21},
-                    {"text": "Jogurt", "points": 12},
-                    {"text": "Owsianka", "points": 3}
-                ]
-            },
-            {
-                "question": "Popularne urządzenie elektroniczne",
-                "answers": [
-                    {"text": "Telefon", "points": 37},
-                    {"text": "Telewizor", "points": 26},
-                    {"text": "Laptop", "points": 16},
-                    {"text": "Tablet", "points": 11},
-                    {"text": "Smartwatch", "points": 4}
-                ]
-            },
-            {
-                "question": "Co można znaleźć w samochodzie?",
-                "answers": [
-                    {"text": "Kierownica", "points": 34},
-                    {"text": "Radio", "points": 23},
-                    {"text": "Fotele", "points": 19},
-                    {"text": "Pasy bezpieczeństwa", "points": 13},
-                    {"text": "Apteczka", "points": 5}
-                ]
-            },
-            {
-                "question": "Popularne danie obiadowe",
-                "answers": [
-                    {"text": "Schabowy", "points": 32},
-                    {"text": "Rosół", "points": 30},
-                    {"text": "Pierogi", "points": 18},
-                    {"text": "Spaghetti", "points": 10},
-                    {"text": "Gołąbki", "points": 4}
-                ]
-            },
-            {
-                "question": "Co ludzie robią przed snem?",
-                "answers": [
-                    {"text": "Myją zęby", "points": 35},
-                    {"text": "Czytają książkę", "points": 22},
-                    {"text": "Oglądają TV", "points": 19},
-                    {"text": "Przeglądają telefon", "points": 12},
-                    {"text": "Biorą prysznic", "points": 6}
-                ]
-            },
-            {
-                "question": "Popularne zwierzę w ZOO",
-                "answers": [
-                    {"text": "Lew", "points": 30},
-                    {"text": "Słoń", "points": 27},
-                    {"text": "Żyrafa", "points": 23},
-                    {"text": "Małpa", "points": 10},
-                    {"text": "Pingwin", "points": 4}
-                ]
-            },
-            {
-                "question": "Co ludzie boją się najbardziej?",
-                "answers": [
-                    {"text": "Pająki", "points": 34},
-                    {"text": "Wysokość", "points": 26},
-                    {"text": "Śmierć", "points": 21},
-                    {"text": "Ciemność", "points": 8},
-                    {"text": "Samotność", "points": 5}
-                ]
-            },
-            {
-                "question": "Popularne święto",
-                "answers": [
-                    {"text": "Boże Narodzenie", "points": 38},
-                    {"text": "Wielkanoc", "points": 26},
-                    {"text": "Sylwester", "points": 17},
-                    {"text": "Walentynki", "points": 8},
-                    {"text": "Dzień Matki", "points": 5}
-                ]
-            },
-            {
-                "question": "Co ludzie kupują w aptece?",
-                "answers": [
-                    {"text": "Leki", "points": 40},
-                    {"text": "Witaminy", "points": 25},
-                    {"text": "Plastry", "points": 15},
-                    {"text": "Kosmetyki", "points": 10},
-                    {"text": "Termometr", "points": 4}
-                ]
-            },
-            {
-                "question": "Popularne hobby",
-                "answers": [
-                    {"text": "Czytanie", "points": 31},
-                    {"text": "Sport", "points": 29},
-                    {"text": "Gotowanie", "points": 18},
-                    {"text": "Ogrodnictwo", "points": 11},
-                    {"text": "Fotografia", "points": 5}
-                ]
-            },
-            {
-                "question": "Co ludzie noszą zimą?",
-                "answers": [
-                    {"text": "Czapkę", "points": 36},
-                    {"text": "Szalik", "points": 27},
-                    {"text": "Rękawiczki", "points": 16},
-                    {"text": "Kurtkę", "points": 11},
-                    {"text": "Buty zimowe", "points": 4}
-                ]
-            },
-            {
-                "question": "Popularne owoce",
-                "answers": [
-                    {"text": "Jabłko", "points": 32},
-                    {"text": "Banan", "points": 29},
-                    {"text": "Truskawka", "points": 17},
-                    {"text": "Pomarańcza", "points": 11},
-                    {"text": "Winogrona", "points": 5}
-                ]
-            }
-        ];
-        
-        // Losowo wybierz 10 pytań
-        const gameQuestions = [...allGameQuestions]
-            .sort(() => Math.random() - 0.5)
-            .slice(0, 10);
-        let currentQuestionIndex = 0;
-        let gameData = gameQuestions[currentQuestionIndex];
+      const allGameQuestions = [
+        {
+          question: "Wymień popularny napój",
+          answers: [
+            { text: "Kawa", points: 39 },
+            { text: "Herbata", points: 25 },
+            { text: "Sok", points: 16 },
+            { text: "Cola", points: 8 },
+            { text: "Woda", points: 4 },
+          ],
+        },
+        {
+          question: "Co ludzie biorą na plażę?",
+          answers: [
+            { text: "Ręcznik", points: 36 },
+            { text: "Krem do opalania", points: 22 },
+            { text: "Parasol", points: 18 },
+            { text: "Okulary przeciwsłoneczne", points: 11 },
+            { text: "Piłkę", points: 7 },
+          ],
+        },
+        {
+          question: "Popularne miejsce na wakacje",
+          answers: [
+            { text: "Morze", points: 35 },
+            { text: "Góry", points: 29 },
+            { text: "Jezioro", points: 16 },
+            { text: "Zagranica", points: 10 },
+            { text: "Działka", points: 4 },
+          ],
+        },
+        {
+          question: "Co ludzie jedzą na śniadanie?",
+          answers: [
+            { text: "Kanapki", points: 31 },
+            { text: "Jajecznica", points: 27 },
+            { text: "Płatki", points: 21 },
+            { text: "Jogurt", points: 12 },
+            { text: "Owsianka", points: 3 },
+          ],
+        },
+        {
+          question: "Popularne urządzenie elektroniczne",
+          answers: [
+            { text: "Telefon", points: 37 },
+            { text: "Telewizor", points: 26 },
+            { text: "Laptop", points: 16 },
+            { text: "Tablet", points: 11 },
+            { text: "Smartwatch", points: 4 },
+          ],
+        },
+        {
+          question: "Co można znaleźć w samochodzie?",
+          answers: [
+            { text: "Kierownica", points: 34 },
+            { text: "Radio", points: 23 },
+            { text: "Fotele", points: 19 },
+            { text: "Pasy bezpieczeństwa", points: 13 },
+            { text: "Apteczka", points: 5 },
+          ],
+        },
+        {
+          question: "Popularne danie obiadowe",
+          answers: [
+            { text: "Schabowy", points: 32 },
+            { text: "Rosół", points: 30 },
+            { text: "Pierogi", points: 18 },
+            { text: "Spaghetti", points: 10 },
+            { text: "Gołąbki", points: 4 },
+          ],
+        },
+        {
+          question: "Co ludzie robią przed snem?",
+          answers: [
+            { text: "Myją zęby", points: 35 },
+            { text: "Czytają książkę", points: 22 },
+            { text: "Oglądają TV", points: 19 },
+            { text: "Przeglądają telefon", points: 12 },
+            { text: "Biorą prysznic", points: 6 },
+          ],
+        },
+        {
+          question: "Popularne zwierzę w ZOO",
+          answers: [
+            { text: "Lew", points: 30 },
+            { text: "Słoń", points: 27 },
+            { text: "Żyrafa", points: 23 },
+            { text: "Małpa", points: 10 },
+            { text: "Pingwin", points: 4 },
+          ],
+        },
+        {
+          question: "Co ludzie boją się najbardziej?",
+          answers: [
+            { text: "Pająki", points: 34 },
+            { text: "Wysokość", points: 26 },
+            { text: "Śmierć", points: 21 },
+            { text: "Ciemność", points: 8 },
+            { text: "Samotność", points: 5 },
+          ],
+        },
+        {
+          question: "Popularne święto",
+          answers: [
+            { text: "Boże Narodzenie", points: 38 },
+            { text: "Wielkanoc", points: 26 },
+            { text: "Sylwester", points: 17 },
+            { text: "Walentynki", points: 8 },
+            { text: "Dzień Matki", points: 5 },
+          ],
+        },
+        {
+          question: "Co ludzie kupują w aptece?",
+          answers: [
+            { text: "Leki", points: 40 },
+            { text: "Witaminy", points: 25 },
+            { text: "Plastry", points: 15 },
+            { text: "Kosmetyki", points: 10 },
+            { text: "Termometr", points: 4 },
+          ],
+        },
+        {
+          question: "Popularne hobby",
+          answers: [
+            { text: "Czytanie", points: 31 },
+            { text: "Sport", points: 29 },
+            { text: "Gotowanie", points: 18 },
+            { text: "Ogrodnictwo", points: 11 },
+            { text: "Fotografia", points: 5 },
+          ],
+        },
+        {
+          question: "Co ludzie noszą zimą?",
+          answers: [
+            { text: "Czapkę", points: 36 },
+            { text: "Szalik", points: 27 },
+            { text: "Rękawiczki", points: 16 },
+            { text: "Kurtkę", points: 11 },
+            { text: "Buty zimowe", points: 4 },
+          ],
+        },
+        {
+          question: "Popularne owoce",
+          answers: [
+            { text: "Jabłko", points: 32 },
+            { text: "Banan", points: 29 },
+            { text: "Truskawka", points: 17 },
+            { text: "Pomarańcza", points: 11 },
+            { text: "Winogrona", points: 5 },
+          ],
+        },
+      ];
 
-        let wrongAnswersCount = 0;
-        
-        let team1Points = 0;
-        let team2Points = 0;
+      // Losowo wybierz 10 pytań
+      const gameQuestions = [...allGameQuestions]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 10);
+      let currentQuestionIndex = 0;
+      let gameData = gameQuestions[currentQuestionIndex];
 
-        function resetGameState() {
-            wrongAnswersCount = 0;
-            $('#wrong-marks').empty();
-            $('#answers').empty();
-            $('.question').addClass('hidden');
-            $('#answers').addClass('hidden');
-            $('.wrong-answer-section').addClass('hidden');
-            
-            // Reset controller buttons
-            gameRef.child('status').update({
-                wrongButtonDisabled: true,
-                showMeQuestionButtonDisabled: false,
-                showParticipantsButtonDisabled: true
-            });
-        }
+      let wrongAnswersCount = 0;
 
-        function loadQuestion() {
-            gameData = gameQuestions[currentQuestionIndex];
-            $('.question').text(gameData.question);
-            
-            gameData.answers.forEach((answer, index) => {
-                const answerHtml = `
+      let team1Points = 0;
+      let team2Points = 0;
+
+      function resetGameState() {
+        wrongAnswersCount = 0;
+        $("#wrong-marks").empty();
+        $("#answers").empty();
+        $(".question").addClass("hidden");
+        $("#answers").addClass("hidden");
+        $(".wrong-answer-section").addClass("hidden");
+
+        // Reset controller buttons
+        gameRef.child("status").update({
+          wrongButtonDisabled: true,
+          showMeQuestionButtonDisabled: false,
+          showParticipantsButtonDisabled: true,
+        });
+      }
+
+      function loadQuestion() {
+        gameData = gameQuestions[currentQuestionIndex];
+        $(".question").text(gameData.question);
+
+        gameData.answers.forEach((answer, index) => {
+          const answerHtml = `
                     <div class="answer-container">
                         <span class="answer" id="answer-${index}">
                             ${answer.text} <span class="points">(${answer.points} pkt)</span>
                         </span>
                     </div>
                 `;
-                $('#answers').append(answerHtml);
-            });
-        }
-
-        function calculateVisiblePoints() {
-            let points = 0;
-            $('.answer.visible').each(function() {
-                const index = $(this).attr('id').split('-')[1];
-                points += gameData.answers[index].points;
-            });
-            return points;
-        }
-
-        // Inicjalizacja Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyDxfX9eNRr7FAVdZbFAUYX5OZWIBi6JnSQ",
-            authDomain: "familiada-game.firebaseapp.com",
-            databaseURL: "https://familiada-game-default-rtdb.firebaseio.com",
-            projectId: "familiada-game",
-            storageBucket: "familiada-game.appspot.com",
-            messagingSenderId: "1045327005632",
-            appId: "1:1045327005632:web:a9c3f9e3e9c5a7e1a9b9c9"
-        };
-        
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        
-        // Generate a unique session ID or use a fixed one for simplicity
-        const sessionId = 'familiada-session';
-        const gameRef = database.ref(`games/${sessionId}`);
-        
-        // Listen for commands from controller
-        gameRef.child('commands').on('child_added', (snapshot) => {
-            const command = snapshot.val();
-            
-            if (command.type === 'showQuestion') {
-                showQuestion();
-            } else if (command.type === 'requestAnswers') {
-                // Send answers to controller when requested
-                gameRef.child('gameData').set({
-                    answers: gameData.answers,
-                    question: gameData.question
-                });
-            } else if (command.type === 'showAnswer') {
-                showAnswer(command.index);
-            } else if (command.type === 'wrongAnswer') {
-                handleWrongAnswer();
-            } else if (command.type === 'nextQuestion') {
-                nextQuestion();
-            } else if (command.type === 'addPointsTeam1') {
-                document.getElementById('add-points-sound').play();
-                const pointsToAdd = calculateVisiblePoints();
-                team1Points += pointsToAdd;
-                $('#team1-points').val(team1Points);
-                // Update status for controller
-                gameRef.child('status').update({
-                    addPointsButtonsDisabled: true
-                });
-            } else if (command.type === 'addPointsTeam2') {
-                document.getElementById('add-points-sound').play();
-                const pointsToAdd = calculateVisiblePoints();
-                team2Points += pointsToAdd;
-                $('#team2-points').val(team2Points);
-                // Update status for controller
-                gameRef.child('status').update({
-                    addPointsButtonsDisabled: true
-                });
-            }
-            
-            // Remove processed command
-            snapshot.ref.remove();
+          $("#answers").append(answerHtml);
         });
+      }
 
-        $(document).ready(function() {
-            // Załaduj pierwsze pytanie
-            loadQuestion();
-            
-            // Reset game state in Firebase
-            gameRef.set({
-                status: {
-                    wrongButtonDisabled: true,
-                    nextButtonVisible: false,
-                    addPointsButtonsDisabled: false
-                },
-                gameData: {
-                    answers: gameData.answers,
-                    question: gameData.question
-                },
-                commands: {}
-            });
+      function calculateVisiblePoints() {
+        let points = 0;
+        $(".answer.visible").each(function () {
+          const index = $(this).attr("id").split("-")[1];
+          points += gameData.answers[index].points;
         });
+        return points;
+      }
 
-        function showQuestion() {
-            $('.question').removeClass('hidden');
-            $('#answers').removeClass('hidden');
-            $('.wrong-answer-section').removeClass('hidden');
+      // Inicjalizacja Firebase
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyBo2PvjuqvoAXkmBLPW2nxdvf-riBDMid4",
+        authDomain: "familiada-3082f.firebaseapp.com",
+        databaseURL:
+          "https://familiada-3082f-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "familiada-3082f",
+        storageBucket: "familiada-3082f.firebasestorage.app",
+        messagingSenderId: "751799523219",
+        appId: "1:751799523219:web:29364b1b50f3655e2b7a66",
+        measurementId: "G-JRRYF6FH3V",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const database = firebase.database();
+
+      // Generate a unique session ID or use a fixed one for simplicity
+      const sessionId = "familiada-session";
+      const gameRef = database.ref(`games/${sessionId}`);
+
+      // Listen for commands from controller
+      gameRef.child("commands").on("child_added", (snapshot) => {
+        const command = snapshot.val();
+
+        if (command.type === "showQuestion") {
+          showQuestion();
+        } else if (command.type === "requestAnswers") {
+          // Send answers to controller when requested
+          gameRef.child("gameData").set({
+            answers: gameData.answers,
+            question: gameData.question,
+          });
+        } else if (command.type === "showAnswer") {
+          showAnswer(command.index);
+        } else if (command.type === "wrongAnswer") {
+          handleWrongAnswer();
+        } else if (command.type === "nextQuestion") {
+          nextQuestion();
+        } else if (command.type === "addPointsTeam1") {
+          document.getElementById("add-points-sound").play();
+          const pointsToAdd = calculateVisiblePoints();
+          team1Points += pointsToAdd;
+          $("#team1-points").val(team1Points);
+          // Update status for controller
+          gameRef.child("status").update({
+            addPointsButtonsDisabled: true,
+          });
+        } else if (command.type === "addPointsTeam2") {
+          document.getElementById("add-points-sound").play();
+          const pointsToAdd = calculateVisiblePoints();
+          team2Points += pointsToAdd;
+          $("#team2-points").val(team2Points);
+          // Update status for controller
+          gameRef.child("status").update({
+            addPointsButtonsDisabled: true,
+          });
         }
-        
-        function showAnswer(index) {
-            $(`#answer-${index}`).addClass('visible');
-            $(`#button-${index}`).hide();
-            document.getElementById('correct-answer-sound').play();
-            
-            // Enable next question button in controller after showing an answer
-            gameRef.child('status').update({
-                nextButtonVisible: true
-            });
+
+        // Remove processed command
+        snapshot.ref.remove();
+      });
+
+      $(document).ready(function () {
+        // Załaduj pierwsze pytanie
+        loadQuestion();
+
+        // Reset game state in Firebase
+        gameRef.set({
+          status: {
+            wrongButtonDisabled: true,
+            nextButtonVisible: false,
+            addPointsButtonsDisabled: false,
+          },
+          gameData: {
+            answers: gameData.answers,
+            question: gameData.question,
+          },
+          commands: {},
+        });
+      });
+
+      function showQuestion() {
+        $(".question").removeClass("hidden");
+        $("#answers").removeClass("hidden");
+        $(".wrong-answer-section").removeClass("hidden");
+      }
+
+      function showAnswer(index) {
+        $(`#answer-${index}`).addClass("visible");
+        $(`#button-${index}`).hide();
+        document.getElementById("correct-answer-sound").play();
+
+        // Enable next question button in controller after showing an answer
+        gameRef.child("status").update({
+          nextButtonVisible: true,
+        });
+      }
+
+      function nextQuestion() {
+        document.getElementById("next-question-sound").play();
+        currentQuestionIndex++;
+        if (currentQuestionIndex < gameQuestions.length) {
+          resetGameState();
+          loadQuestion();
+          // Wyślij nowe odpowiedzi do kontrolera
+          gameRef.child("gameData").set({
+            answers: gameData.answers,
+            question: gameData.question,
+          });
+
+          // Update controller status
+          gameRef.child("status").update({
+            wrongButtonDisabled: true,
+            nextButtonVisible: false,
+            addPointsButtonsDisabled: false,
+          });
+        } else {
+          const winner =
+            team1Points > team2Points
+              ? "Drużyna 1"
+              : team1Points < team2Points
+              ? "Drużyna 2"
+              : "Remis";
+          const winnerText =
+            winner === "Remis" ? "Remis!" : `Zwycięzca: ${winner}!`;
+          alert(
+            `Koniec gry!\n${winnerText}\nDrużyna 1: ${team1Points} punktów\nDrużyna 2: ${team2Points} punktów`
+          );
+
+          // Disable next question button in controller
+          gameRef.child("status").update({
+            nextButtonVisible: false,
+            gameOver: true,
+          });
         }
-        
-        function nextQuestion() {
-            document.getElementById('next-question-sound').play();
-            currentQuestionIndex++;
-            if (currentQuestionIndex < gameQuestions.length) {
-                resetGameState();
-                loadQuestion();
-                // Wyślij nowe odpowiedzi do kontrolera
-                gameRef.child('gameData').set({
-                    answers: gameData.answers,
-                    question: gameData.question
-                });
-                
-                // Update controller status
-                gameRef.child('status').update({
-                    wrongButtonDisabled: true,
-                    nextButtonVisible: false,
-                    addPointsButtonsDisabled: false
-                });
-            } else {
-                const winner = team1Points > team2Points ? 'Drużyna 1' : team1Points < team2Points ? 'Drużyna 2' : 'Remis';
-                const winnerText = winner === 'Remis' ? 'Remis!' : `Zwycięzca: ${winner}!`;
-                alert(`Koniec gry!\n${winnerText}\nDrużyna 1: ${team1Points} punktów\nDrużyna 2: ${team2Points} punktów`);
-                
-                // Disable next question button in controller
-                gameRef.child('status').update({
-                    nextButtonVisible: false,
-                    gameOver: true
-                });
-            }
+      }
+
+      function handleWrongAnswer() {
+        wrongAnswersCount++;
+
+        // Odtwórz dźwięk złej odpowiedzi
+        document.getElementById("wrong-answer-sound").play();
+
+        // Dodaj X do sekcji złych odpowiedzi
+        $("#wrong-marks").append('<span class="wrong-mark">✗</span>');
+
+        // Po 3 błędnych odpowiedziach wyślij informację do kontrolera
+        if (wrongAnswersCount >= 3) {
+          gameRef.child("status").update({
+            wrongButtonDisabled: true,
+          });
         }
-        
-        function handleWrongAnswer() {
-            wrongAnswersCount++;
-            
-            // Odtwórz dźwięk złej odpowiedzi
-            document.getElementById('wrong-answer-sound').play();
-            
-            // Dodaj X do sekcji złych odpowiedzi
-            $('#wrong-marks').append('<span class="wrong-mark">✗</span>');
-            
-            // Po 3 błędnych odpowiedziach wyślij informację do kontrolera
-            if (wrongAnswersCount >= 3) {
-                gameRef.child('status').update({
-                    wrongButtonDisabled: true
-                });
-            }
-        }
+      }
     </script>
-</body>
+  </body>
 </html>
