@@ -150,12 +150,10 @@
         <div class="team1 team-section">
             <input type="text" class="team-input" value="Drużyna 1">
             <input type="text" class="team-points" id="team1-points" value="0" readonly>
-            <button class="add-points-btn" id="team1-add">+</button>
         </div>
         <div class="team2 team-section">
             <input type="text" class="team-input" value="Drużyna 2">
             <input type="text" class="team-points" id="team2-points" value="0" readonly>
-            <button class="add-points-btn" id="team2-add">+</button>
         </div>
     </div>
     <div id="game-container">
@@ -339,7 +337,6 @@
             $('.question').addClass('hidden');
             $('#answers').addClass('hidden');
             $('.wrong-answer-section').addClass('hidden');
-            $('#team1-add, #team2-add').prop('disabled', false);
             
             // Reset controller buttons
             channel.postMessage({
@@ -407,25 +404,6 @@
 
 
             // Obsługa przycisków dodawania punktów
-            $('#team1-add').click(function() {
-                document.getElementById('add-points-sound').play();
-                const pointsToAdd = calculateVisiblePoints();
-                team1Points += pointsToAdd;
-                $('#team1-points').val(team1Points);
-                $(this).prop('disabled', true);
-                $('#team2-add').prop('disabled', true);
-                $('#next-question-btn').removeClass('hidden');
-            });
-
-            $('#team2-add').click(function() {
-                document.getElementById('add-points-sound').play();
-                const pointsToAdd = calculateVisiblePoints();
-                team2Points += pointsToAdd;
-                $('#team2-points').val(team2Points);
-                $(this).prop('disabled', true);
-                $('#team1-add').prop('disabled', true);
-                $('#next-question-btn').removeClass('hidden');
-            });
 
         });
 
@@ -485,6 +463,43 @@
                 });
             }
         }
+        
+        // Nasłuchuj na wiadomości z kontrolera dotyczące punktów
+        channel.onmessage = (event) => {
+            if (event.data.type === 'showQuestion') {
+                showQuestion();
+            } else if (event.data.type === 'requestAnswers') {
+                // Send answers to controller when requested
+                channel.postMessage({
+                    type: 'loadAnswers',
+                    answers: gameData.answers
+                });
+            } else if (event.data.type === 'showAnswer') {
+                showAnswer(event.data.index);
+            } else if (event.data.type === 'wrongAnswer') {
+                handleWrongAnswer();
+            } else if (event.data.type === 'nextQuestion') {
+                nextQuestion();
+            } else if (event.data.type === 'addPointsTeam1') {
+                document.getElementById('add-points-sound').play();
+                const pointsToAdd = calculateVisiblePoints();
+                team1Points += pointsToAdd;
+                $('#team1-points').val(team1Points);
+                // Notify controller to disable both buttons
+                channel.postMessage({
+                    type: 'disableAddPointsButtons'
+                });
+            } else if (event.data.type === 'addPointsTeam2') {
+                document.getElementById('add-points-sound').play();
+                const pointsToAdd = calculateVisiblePoints();
+                team2Points += pointsToAdd;
+                $('#team2-points').val(team2Points);
+                // Notify controller to disable both buttons
+                channel.postMessage({
+                    type: 'disableAddPointsButtons'
+                });
+            }
+        };
     </script>
 </body>
 </html>

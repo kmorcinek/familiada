@@ -47,6 +47,15 @@
     </div>
     
     <div id="answers-container"></div>
+    
+    <div style="display: flex; gap: 15px; margin-top: 30px; border-top: 2px solid #ccc; padding-top: 15px;">
+        <button id="team1-add" class="answer-button" style="background-color: #27ae60; flex: 1;">
+            + Punkty dla Drużyny 1
+        </button>
+        <button id="team2-add" class="answer-button" style="background-color: #27ae60; flex: 1;">
+            + Punkty dla Drużyny 2
+        </button>
+    </div>
 
     <script>
         const channel = new BroadcastChannel('familiada');
@@ -89,6 +98,27 @@
             this.style.display = 'none';
         });
         
+        // Obsługa przycisków dodawania punktów
+        document.getElementById('team1-add').addEventListener('click', function() {
+            document.getElementById('button-click-sound').play();
+            channel.postMessage({
+                type: 'addPointsTeam1'
+            });
+            document.getElementById('team1-add').disabled = true;
+            document.getElementById('team2-add').disabled = true;
+            document.getElementById('next-question-btn').style.display = 'block';
+        });
+        
+        document.getElementById('team2-add').addEventListener('click', function() {
+            document.getElementById('button-click-sound').play();
+            channel.postMessage({
+                type: 'addPointsTeam2'
+            });
+            document.getElementById('team1-add').disabled = true;
+            document.getElementById('team2-add').disabled = true;
+            document.getElementById('next-question-btn').style.display = 'block';
+        });
+        
         // Nasłuchuj na wiadomości z głównego okna
         channel.onmessage = (event) => {
             if (event.data.type === 'disableWrongButton') {
@@ -96,11 +126,16 @@
             } else if (event.data.type === 'resetWrongButton') {
                 document.getElementById('wrong-answer-btn').disabled = true; // Keep disabled until question is shown
                 document.getElementById('show-question-btn').disabled = false;
+                document.getElementById('team1-add').disabled = false;
+                document.getElementById('team2-add').disabled = false;
             } else if (event.data.type === 'enableNextButton') {
                 document.getElementById('next-question-btn').style.display = 'block';
             } else if (event.data.type === 'disableNextButton') {
                 document.getElementById('next-question-btn').style.display = 'none';
                 document.getElementById('next-question-btn').disabled = true;
+            } else if (event.data.type === 'disableAddPointsButtons') {
+                document.getElementById('team1-add').disabled = true;
+                document.getElementById('team2-add').disabled = true;
             } else if (event.data.type === 'loadAnswers') {
                 const answers = event.data.answers;
                 const container = document.getElementById('answers-container');
