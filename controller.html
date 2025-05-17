@@ -42,17 +42,9 @@
 
     <div style="display: flex; gap: 15px; margin-bottom: 30px">
       <button
-        id="show-me-question-btn"
-        class="answer-button"
-        style="background-color: #27ae60; font-size: 36px"
-      >
-        Pokaż mi pytanie
-      </button>
-      <button
         id="show-participants-question-btn"
         class="answer-button"
         style="background-color: #27ae60; font-size: 36px"
-        disabled
       >
         Pokaż uczestnikom pytanie
       </button>
@@ -144,23 +136,12 @@
       const sessionId = "familiada-session";
       const gameRef = database.ref(`games/${sessionId}`);
 
-      // Obsługa przycisku pokazującego pytanie tylko dla prowadzącego
-      document
-        .getElementById("show-me-question-btn")
-        .addEventListener("click", function () {
-          // No sound in controller
-
-          // Request answers from main window
-          gameRef.child("commands").push({
-            type: "requestAnswers",
-          });
-
-          // Disable this button and enable the show to participants button
-          this.disabled = true;
-          document.getElementById(
-            "show-participants-question-btn"
-          ).disabled = false;
+      // Request answers from main window immediately when controller loads
+      window.addEventListener('DOMContentLoaded', function() {
+        gameRef.child("commands").push({
+          type: "requestAnswers",
         });
+      });
 
       // Obsługa przycisku pokazującego pytanie uczestnikom
       document
@@ -198,7 +179,6 @@
 
       // Make sure wrong answer button is disabled initially
       document.getElementById("wrong-answer-btn").disabled = true;
-      document.getElementById("show-participants-question-btn").disabled = true;
 
       // Obsługa przycisku następnego pytania
       document
@@ -246,10 +226,6 @@
             status.wrongButtonDisabled;
         }
 
-        if (status.showMeQuestionButtonDisabled !== undefined) {
-          document.getElementById("show-me-question-btn").disabled =
-            status.showMeQuestionButtonDisabled;
-        }
 
         if (status.showParticipantsButtonDisabled !== undefined) {
           document.getElementById("show-participants-question-btn").disabled =
@@ -287,8 +263,7 @@
                   wrongButtonDisabled: true,
                   nextButtonVisible: false,
                   addPointsButtonsDisabled: false,
-                  showMeQuestionButtonDisabled: false,
-                  showParticipantsButtonDisabled: true,
+                  showParticipantsButtonDisabled: false,
                   gameOver: false
                 },
                 commands: {
@@ -300,8 +275,7 @@
               });
               
               // Reset controller UI
-              document.getElementById("show-me-question-btn").disabled = false;
-              document.getElementById("show-participants-question-btn").disabled = true;
+              document.getElementById("show-participants-question-btn").disabled = false;
               document.getElementById("wrong-answer-btn").disabled = true;
               document.getElementById("next-question-btn").style.display = "none";
               document.getElementById("team1-add").disabled = false;
@@ -336,7 +310,7 @@
           const button = document.createElement("button");
           button.className = "answer-button";
           button.textContent = `Pokaż odpowiedź ${index + 1}: ${answer.text}`;
-          // Always disable answer buttons initially, they will be enabled only after showing to participants
+          // Answer buttons are disabled until "Pokaż uczestnikom pytanie" is clicked
           button.disabled = true;
           // Prevent default behavior when text is selected
           button.addEventListener("mouseup", function (e) {
