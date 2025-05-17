@@ -4,5 +4,5 @@ Gra Familiada - wersja online
 
 ## Linki do gry
 
-- [Ekran główny](index.html)
-- [Panel kontrolera](controller.html)
+- [Ekran główny](https://kmorcinek.github.io/familiada/index.html)
+- [Panel kontrolera](https://kmorcinek.github.io/familiada/controller.html)

@@ -4,8 +4,8 @@ Gra Familiada - wersja online do wyświetlania na dużym ekranie.
 
 ## Jak grać
 
-1. Otwórz [index.html](index.html) na dużym ekranie widocznym dla wszystkich graczy
-2. Otwórz [controller.html](controller.html) na urządzeniu prowadzącego (laptop, tablet)
+1. Otwórz [index.html](https://kmorcinek.github.io/familiada/index.html) na dużym ekranie widocznym dla wszystkich graczy
+2. Otwórz [controller.html](https://kmorcinek.github.io/familiada/controller.html) na urządzeniu prowadzącego (laptop, tablet)
 3. Prowadzący kontroluje grę za pomocą panelu kontrolera
 
 ## Funkcje
