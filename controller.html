@@ -90,6 +90,12 @@
             
             // Enable wrong answer button when question is shown to participants
             document.getElementById('wrong-answer-btn').disabled = false;
+            
+            // Enable all answer buttons
+            const answerButtons = document.querySelectorAll('#answers-container .answer-button');
+            answerButtons.forEach(button => {
+                button.disabled = false;
+            });
         });
         
         // Obsługa przycisku złej odpowiedzi
@@ -167,8 +173,9 @@
                     const button = document.createElement('button');
                     button.className = 'answer-button';
                     button.textContent = `Pokaż odpowiedź ${index + 1}: ${answer.text}`;
-                    // Enable answer buttons only if show participants question button is disabled (question is shown)
-                    button.disabled = !document.getElementById('show-participants-question-btn').disabled;
+                    // Enable answer buttons only after showing question to participants
+                    button.disabled = document.getElementById('show-participants-question-btn').disabled || 
+                                     !document.getElementById('show-me-question-btn').disabled;
                     // Prevent default behavior when text is selected
                     button.addEventListener('mouseup', function(e) {
                         const selection = window.getSelection().toString();
