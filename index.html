@@ -426,7 +426,27 @@
       gameRef.child("commands").on("child_added", (snapshot) => {
         const command = snapshot.val();
 
-        if (command.type === "showQuestion") {
+        if (command.type === "resetGame") {
+          // Reset the game to initial state
+          currentQuestionIndex = 0;
+          team1Points = 0;
+          team2Points = 0;
+          $("#team1-points").val(0);
+          $("#team2-points").val(0);
+          
+          // Reset game state
+          resetGameState();
+          
+          // Reload first question
+          gameData = gameQuestions[currentQuestionIndex];
+          loadQuestion();
+          
+          // Update controller with new data
+          gameRef.child("gameData").set({
+            answers: gameData.answers,
+            question: gameData.question
+          });
+        } else if (command.type === "showQuestion") {
           showQuestion();
         } else if (command.type === "requestAnswers") {
           // Send answers to controller when requested

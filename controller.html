@@ -111,6 +111,16 @@
       </button>
     </div>
 
+    <div style="margin-top: 30px; text-align: center;">
+      <button
+        id="reset-game-btn"
+        class="answer-button"
+        style="background-color: #c0392b; font-size: 36px; width: 50%; margin: 0 auto;"
+      >
+        Reset gry
+      </button>
+    </div>
+
     <script>
       // Firebase configuration
       // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -263,6 +273,40 @@
           document.getElementById("next-question-btn").disabled = true;
         }
       });
+
+      // Obsługa przycisku resetu gry
+      document
+        .getElementById("reset-game-btn")
+        .addEventListener("click", function () {
+          if (confirm("Czy na pewno chcesz zresetować grę? Wszystkie postępy zostaną utracone.")) {
+            // Reset game state in Firebase
+            gameRef.set({
+              status: {
+                wrongButtonDisabled: true,
+                nextButtonVisible: false,
+                addPointsButtonsDisabled: false,
+                showMeQuestionButtonDisabled: false,
+                showParticipantsButtonDisabled: true,
+                gameOver: false
+              },
+              commands: {
+                reset: {
+                  type: "resetGame"
+                }
+              }
+            });
+            
+            // Reset controller UI
+            document.getElementById("show-me-question-btn").disabled = false;
+            document.getElementById("show-participants-question-btn").disabled = true;
+            document.getElementById("wrong-answer-btn").disabled = true;
+            document.getElementById("next-question-btn").style.display = "none";
+            document.getElementById("team1-add").disabled = false;
+            document.getElementById("team2-add").disabled = false;
+            document.querySelector(".question").style.display = "none";
+            document.getElementById("answers-container").innerHTML = "";
+          }
+        });
 
       // Listen for game data updates
       gameRef.child("gameData").on("value", (snapshot) => {
