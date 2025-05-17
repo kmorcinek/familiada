@@ -378,6 +378,28 @@
           showParticipantsButtonDisabled: true,
         });
       }
+      
+      // Complete reset of the game and Firebase data
+      function completeReset() {
+        // Reset all game variables
+        wrongAnswersCount = 0;
+        currentQuestionIndex = 0;
+        team1Points = 0;
+        team2Points = 0;
+        $("#team1-points").val(0);
+        $("#team2-points").val(0);
+        
+        // Clear UI elements
+        $("#wrong-marks").empty();
+        $("#answers").empty();
+        $(".question").addClass("hidden");
+        $("#answers").addClass("hidden");
+        $(".wrong-answer-section").addClass("hidden");
+        
+        // Reload first question
+        gameData = gameQuestions[currentQuestionIndex];
+        loadQuestion();
+      }
 
       function loadQuestion() {
         gameData = gameQuestions[currentQuestionIndex];
@@ -431,25 +453,19 @@
         const command = snapshot.val();
 
         if (command.type === "resetGame") {
-          // Reset the game to initial state
-          currentQuestionIndex = 0;
-          team1Points = 0;
-          team2Points = 0;
-          $("#team1-points").val(0);
-          $("#team2-points").val(0);
-          
-          // Reset game state
-          resetGameState();
-          
-          // Reload first question
-          gameData = gameQuestions[currentQuestionIndex];
-          loadQuestion();
+          // Perform complete reset
+          completeReset();
           
           // Update controller with new data
           gameRef.child("gameData").set({
             answers: gameData.answers,
             question: gameData.question
           });
+          
+          // Force page reload after a short delay to ensure clean state
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         } else if (command.type === "showQuestion") {
           showQuestion();
         } else if (command.type === "requestAnswers") {
