@@ -27,6 +27,7 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 27px; /* Button text 1.5x */
+            user-select: text; /* Allow text selection */
         }
         .answer-button:hover {
             background-color: #2980b9;
@@ -168,7 +169,19 @@
                     button.textContent = `Pokaż odpowiedź ${index + 1}: ${answer.text}`;
                     // Enable answer buttons only if show participants question button is disabled (question is shown)
                     button.disabled = !document.getElementById('show-participants-question-btn').disabled;
-                    button.onclick = () => {
+                    // Prevent default behavior when text is selected
+                    button.addEventListener('mouseup', function(e) {
+                        const selection = window.getSelection().toString();
+                        if (selection.length > 0) {
+                            e.stopPropagation();
+                            return;
+                        }
+                    });
+                    button.onclick = (e) => {
+                        // Only trigger if no text is selected
+                        if (window.getSelection().toString().length > 0) {
+                            return;
+                        }
                         document.getElementById('button-click-sound').play();
                         channel.postMessage({
                             type: 'showAnswer',
