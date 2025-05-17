@@ -380,7 +380,8 @@
                 // Send answers to controller when requested
                 channel.postMessage({
                     type: 'loadAnswers',
-                    answers: gameData.answers
+                    answers: gameData.answers,
+                    question: gameData.question
                 });
             } else if (event.data.type === 'showAnswer') {
                 showAnswer(event.data.index);
@@ -433,7 +434,8 @@
                 // Wyślij nowe odpowiedzi do kontrolera
                 channel.postMessage({
                     type: 'loadAnswers',
-                    answers: gameData.answers
+                    answers: gameData.answers,
+                    question: gameData.question
                 });
             } else {
                 const winner = team1Points > team2Points ? 'Drużyna 1' : team1Points < team2Points ? 'Drużyna 2' : 'Remis';
