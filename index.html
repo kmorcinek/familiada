@@ -511,6 +511,11 @@
         $(".question").removeClass("hidden");
         $("#answers").removeClass("hidden");
         $(".wrong-answer-section").removeClass("hidden");
+        
+        // Enable wrong answer button in controller
+        gameRef.child("status").update({
+          wrongButtonDisabled: false,
+        });
       }
 
       function showAnswer(index) {
