@@ -153,7 +153,7 @@
       document
         .getElementById("show-me-question-btn")
         .addEventListener("click", function () {
-          document.getElementById("button-click-sound").play();
+          // No sound in controller
 
           // Request answers from main window
           gameRef.child("commands").push({
@@ -171,7 +171,7 @@
       document
         .getElementById("show-participants-question-btn")
         .addEventListener("click", function () {
-          document.getElementById("show-question-sound").play();
+          // No sound in controller
           gameRef.child("commands").push({
             type: "showQuestion",
           });
@@ -195,7 +195,7 @@
       document
         .getElementById("wrong-answer-btn")
         .addEventListener("click", function () {
-          document.getElementById("wrong-answer-sound").play();
+          // No sound in controller
           gameRef.child("commands").push({
             type: "wrongAnswer",
           });
@@ -209,7 +209,7 @@
       document
         .getElementById("next-question-btn")
         .addEventListener("click", function () {
-          document.getElementById("next-question-sound").play();
+          // No sound in controller
           gameRef.child("commands").push({
             type: "nextQuestion",
           });
@@ -220,7 +220,7 @@
       document
         .getElementById("team1-add")
         .addEventListener("click", function () {
-          document.getElementById("button-click-sound").play();
+          // No sound in controller
           gameRef.child("commands").push({
             type: "addPointsTeam1",
           });
@@ -232,7 +232,7 @@
       document
         .getElementById("team2-add")
         .addEventListener("click", function () {
-          document.getElementById("button-click-sound").play();
+          // No sound in controller
           gameRef.child("commands").push({
             type: "addPointsTeam2",
           });
@@ -313,7 +313,7 @@
             if (window.getSelection().toString().length > 0) {
               return;
             }
-            document.getElementById("button-click-sound").play();
+            // No sound in controller
             gameRef.child("commands").push({
               type: "showAnswer",
               index: index,
